@@ -1,10 +1,17 @@
-const mongoose = require("mongoose");
+import "dotenv/config";
+import mysql from "mysql2";
 
-const connectDB = (url) => {
-  return mongoose.connect(url, {
-    // useNewUrlParser: true, // No longer necessary but included for compatibility
-    // useUnifiedTopology: true, // No longer necessary but included for compatibility
-  });
-};
+const pool = mysql
+  .createPool({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "lenderapp",
+    // host: process.env.HOST,
+    // user: process.env.MYSQLUSER,
+    // password: process.env.MYSQLPSWD,
+    // database: process.env.DBNAME,
+  })
+  .promise();
 
-module.exports = connectDB;
+export default pool;

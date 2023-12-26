@@ -1,28 +1,29 @@
-require("dotenv").config();
-require("express-async-errors");
-const express = require("express");
+import "dotenv/config";
+import "express-async-errors";
+import express from "express";
+import cors from "cors";
+
 const app = express();
-const cors = require("cors");
 
 //connectDB
-const connectDB = require("../db/connect");
-const authenticateUser = require("./middleware/authentication");
+// const connectDB = require("../db/connect");
+// import authenticateUser from "./middleware/authentication.js";
 
-//routers
-const NameRouter = require("./routes/testRoutes");
+// Importing routers using ES6 syntax
+import EmployeeRouter from "./routes/employeeRoutes.js";
+// import RolesRouter from "./routes/roleDetailsRoutes.js";
 
 app.use(express.json());
 app.use(cors());
 
 //routes
-app.use("/api/v1/test", NameRouter);
+app.use("/api/v1/employee", EmployeeRouter);
+// app.use("/api/v1/roles", RolesRouter);
 
 const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URI);
-
     app.listen(port, () =>
       console.log(`LenderApp Server is listening on port ${port}...`)
     );

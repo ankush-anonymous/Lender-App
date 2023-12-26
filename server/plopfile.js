@@ -1,13 +1,11 @@
-const requireField = (fieldName) => {
-  return (value) => {
-    if (String(value).length === 0) {
-      return fieldName + " is required";
-    }
-    return true;
-  };
+const requireField = (fieldName) => (value) => {
+  if (String(value).length === 0) {
+    return `${fieldName} is required`;
+  }
+  return true;
 };
 
-module.exports = function (plop) {
+export default function (plop) {
   plop.setGenerator("controller", {
     description: "Generate a new controller",
     prompts: [
@@ -24,11 +22,11 @@ module.exports = function (plop) {
         path: "src/controllers/{{camelCase name}}Controller.js",
         templateFile: "plop-templates/controller.js.hbs",
       },
-      {
-        type: "add",
-        path: "src/models/{{camelCase name}}Model.js",
-        templateFile: "plop-templates/model.js.hbs",
-      },
+      // {
+      //   type: "add",
+      //   path: "src/models/{{camelCase name}}Model.js",
+      //   templateFile: "plop-templates/model.js.hbs",
+      // },
       {
         type: "add",
         path: "src/repository/{{camelCase name}}Repository.js",
@@ -46,4 +44,4 @@ module.exports = function (plop) {
       },
     ],
   });
-};
+}

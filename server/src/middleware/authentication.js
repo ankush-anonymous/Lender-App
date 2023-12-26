@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { UnauthenticatedError } = require("../errors");
+import jwt from "jsonwebtoken";
+import { UnauthenticatedError } from "../errors.js";
 
 const auth = async (req, res, next) => {
   // check header
