@@ -13,6 +13,7 @@ const app = express();
 import EmployeeRouter from "./routes/employeeRoutes.js";
 import RolesRouter from "./routes/roleDetailsRoutes.js";
 import ClientPersonalDetailsRouter from "./routes/clientPersonalDtlsRoutes.js";
+import ClientGuarentorRouter from "./routes/clientGuarentorRoutes.js";
 
 app.use(express.json());
 app.use(cors());
@@ -21,6 +22,7 @@ app.use(cors());
 app.use("/api/v1/employee", EmployeeRouter);
 app.use("/api/v1/roles", RolesRouter);
 app.use("/api/v1/client", ClientPersonalDetailsRouter);
+app.use("/api/v1/client/guarantor", ClientGuarentorRouter);
 
 const port = process.env.PORT || 5000;
 
