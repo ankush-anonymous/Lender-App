@@ -24,8 +24,22 @@ const AdminDashboard = () => {
   return (
     <>
       <AdminNavbar />
+      {/* Header Section */}
+      <section className="header">
+        <Box
+          sx={{
+            marginTop: "70px",
+            backgroundColor: "grey.200",
+            width: "100%",
+            minHeight: "20px",
+            padding: "20px",
+          }}
+        >
+          <Typography variant="h5">Hi Admin</Typography>
+        </Box>
+      </section>
       <section className="ChartSection">
-        <Box sx={{ marginTop: "80px" }}>
+        <Box>
           {/* Adjust the marginTop to make sure the content is below the navbar */}
           <Box
             sx={{
