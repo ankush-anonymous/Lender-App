@@ -2,11 +2,14 @@ import logo from "./logo.svg";
 import "./App.css";
 import React, { useState } from "react";
 import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
+import axios from "axios";
 
 import LoginPage from "./Pages/LoginPage.jsx";
 import AdminDashboardPage from "./Pages/AdminDashboardPage";
 import AddSalesExecutivePage from "./Pages/AddSalesExecutivePage";
 import AddCustomerPage from "./Pages/AddCustomerPage";
+
+axios.defaults.baseURL = "http://localhost:5000";
 
 function App() {
   return (

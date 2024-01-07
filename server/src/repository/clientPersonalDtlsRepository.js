@@ -28,7 +28,8 @@ export const createClientPersonalDetails = async (
   isDivorced = false,
   isSeparate = false,
   isOwned = false,
-  isRented = false
+  isRented = false,
+  SalesExecID
 ) => {
   try {
     const sql = `INSERT INTO ClientPersonal (
@@ -36,8 +37,8 @@ export const createClientPersonalDetails = async (
       DateOfBirth, Age, Address, ResidenceCustYr, MobileNo1, MobileNo2,
       isTatchedHouse, isRoofTiles, isMetalsheets, isCementSheetsRoof,
       isCementContcreteCeil, isHindu, isMuslim, isChristian, isOthers,
-      isMarried, isSingle, isWidow, isDivorced, isSeparate, isOwned, isRented
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      isMarried, isSingle, isWidow, isDivorced, isSeparate, isOwned, isRented,SalesExecID
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
     const [result] = await pool.query(sql, [
       centerName,
@@ -68,6 +69,7 @@ export const createClientPersonalDetails = async (
       isSeparate,
       isOwned,
       isRented,
+      SalesExecID,
     ]);
 
     return result; // Return the ID of the inserted row
@@ -76,15 +78,31 @@ export const createClientPersonalDetails = async (
   }
 };
 
-export const getAllClientPersonalDetails = async () => {
+export const getAllClientPersonalDetails = async ({
+  MobileNo1,
+  salesExecID,
+}) => {
   try {
-    const sql = "SELECT * FROM ClientPersonal";
-    const [rows] = await pool.query(sql);
+    let sql = "SELECT * FROM ClientPersonal WHERE 1";
+    const queryParams = [];
 
-    return rows; // Return all client personal details
+    if (MobileNo1) {
+      sql += " AND MobileNo1 = ?";
+      queryParams.push(MobileNo1);
+    }
+
+    if (salesExecID) {
+      sql += " AND salesExecID = ?";
+      queryParams.push(salesExecID);
+    }
+
+    const [rows] = await pool.query(sql, queryParams);
+    const count = rows.length; // Get the count of rows
+
+    return { clients: rows, count }; // Return client personal details based on parameters
   } catch (error) {
     throw new Error(
-      "Error retrieving client personal details from the database"
+      "Error retrieving client personal details with given parameters from the database"
     );
   }
 };

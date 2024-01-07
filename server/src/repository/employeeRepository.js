@@ -1,4 +1,53 @@
 import pool from "../../db/connect.js";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+// Assuming you have a database pool named 'pool' and necessary bcrypt and jwt imports
+
+export const loginUser = async (phoneNumber, password) => {
+  try {
+    // Fetch user details by phone number
+    const [userRows] = await pool.query(
+      "SELECT * FROM empDetails WHERE Phone = ? LIMIT 1",
+      [phoneNumber]
+    );
+
+    if (userRows.length === 0) {
+      return { message: "User not found" }; // Sending message if user is not found
+    }
+
+    const user = userRows[0];
+
+    // Check if the provided password matches the hashed password in the database
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new Error("Invalid credentials");
+    }
+
+    // If password is correct, generate JWT token
+    const secretKey = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        UserName: user.Name,
+        userPhone: user.Phone,
+        userEmail: user.EmailAddr,
+        userPhoto: user.Photo,
+        userAddress: user.Address,
+        govtId: user.GovtID,
+      },
+      secretKey,
+      {
+        expiresIn: process.env.JWT_LIFETIME,
+      }
+    );
+
+    return { token };
+  } catch (error) {
+    throw new Error(`Error logging in: ${error.message}`);
+  }
+};
 
 export const createEmployee = async (
   generatedId,
@@ -12,6 +61,10 @@ export const createEmployee = async (
   password
 ) => {
   try {
+    // Hash password
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
     const [result] = await pool.query(
       "INSERT INTO empDetails (id, Name, Phone, EmailAddr, Photo, Address, GovtID, Role, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -23,19 +76,56 @@ export const createEmployee = async (
         address,
         govtId,
         role,
-        password,
+        hashedPassword,
       ]
     );
 
-    return result.insertId; // Return the ID of the inserted row
+    const secretKey = process.env.JWT_SECRET;
+
+    const token = jwt.sign(
+      {
+        id: generatedId,
+        UserName: name,
+        userPhone: phoneNumber,
+        userEmail: email,
+        userPhoto: photo,
+        userAddress: address,
+        userId: govtId,
+      },
+      secretKey,
+      {
+        expiresIn: process.env.JWT_LIFETIME,
+      }
+    );
+
+    return { generatedId, token }; // Return generatedId and token
   } catch (error) {
     throw new Error("Error creating employee in the database");
   }
 };
 
-export const getAllEmployees = async () => {
+export const getAllEmployees = async ({ phoneNumber, EmailAddr, Role }) => {
   try {
-    const [rows, fields] = await pool.query("SELECT * FROM empDetails");
+    let query = "SELECT * FROM empDetails WHERE 1"; // Initial query
+
+    const queryParams = [];
+
+    if (phoneNumber) {
+      query += " AND Phone = ?"; // Add condition for phoneNumber
+      queryParams.push(phoneNumber);
+    }
+
+    if (EmailAddr) {
+      query += " AND EmailAddr = ?"; // Add condition for EmailAddr
+      queryParams.push(EmailAddr);
+    }
+
+    if (Role) {
+      query += " AND Role = ?"; // Add condition for Role
+      queryParams.push(Role);
+    }
+
+    const [rows, fields] = await pool.query(query, queryParams);
     const count = rows.length; // Get the count of rows
 
     return { employees: rows, count }; // Return employee data and count

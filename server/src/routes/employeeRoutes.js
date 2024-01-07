@@ -8,6 +8,7 @@ router.get("/getAllEmployees", employeeController.getAllEmployees);
 router.get("/getEmployeeById/:id", employeeController.getEmployeeById);
 
 router.post("/register", employeeController.registerEmployee);
+router.post("/login", employeeController.loginEmployee);
 
 router.patch("/updateEmployeeById/:id", employeeController.updateEmployeeById);
 

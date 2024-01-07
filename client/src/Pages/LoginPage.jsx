@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import axios from "axios";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("/api/v1/employee/login", {
+        phoneNumber,
+        password,
+      });
+
+      // Assuming the server returns a token in response.data.token
+      const { token } = response.data;
+
+      // Store the token in localStorage
+      localStorage.setItem("token", token);
+      setShowSuccess(true);
+      setShowError(false);
+    } catch (error) {
+      setShowSuccess(false);
+      setShowError(true);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -17,18 +46,17 @@ const LoginPage = () => {
       }}
     >
       <Paper
-        elevation={3}
+        elevation={6}
         sx={{
           padding: "20px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "600px", // Set the maximum width here
-          width: "100%", // Ensure the Paper takes full width within its container
+          maxWidth: "600px",
+          width: "100%",
         }}
       >
         <Box sx={{ display: "flex" }}>
-          {/* Left Half with Image */}
           <Box sx={{ width: "50%", height: "100%" }}>
             <img
               src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -36,7 +64,6 @@ const LoginPage = () => {
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </Box>
-          {/* Right Half with Login Form */}
           <Box
             sx={{
               width: "50%",
@@ -59,6 +86,8 @@ const LoginPage = () => {
               InputProps={{
                 style: { borderColor: "#739072" },
               }}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
 
             <TextField
@@ -70,6 +99,8 @@ const LoginPage = () => {
               InputProps={{
                 style: { borderColor: "#739072" },
               }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <Button
@@ -82,11 +113,36 @@ const LoginPage = () => {
                   backgroundColor: "#739072",
                 },
               }}
+              onClick={handleLogin}
             >
               Login
             </Button>
           </Box>
         </Box>
+        {showSuccess && (
+          <Link to="/admin/dashboard" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                marginTop: "20px",
+                backgroundColor: "#557C55",
+                "&:hover": {
+                  backgroundColor: "#739072",
+                },
+              }}
+            >
+              Go to Dashboard
+            </Button>
+          </Link>
+        )}
+
+        {showError && (
+          <Alert severity="error" sx={{ width: "100%", marginTop: "20px" }}>
+            <AlertTitle>Wrong Credentials</AlertTitle>
+            The provided credentials are incorrect. Please try again.
+          </Alert>
+        )}
       </Paper>
     </Box>
   );

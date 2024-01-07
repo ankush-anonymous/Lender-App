@@ -32,6 +32,7 @@ export const createClientPersonalDetails = async (req, res) => {
       isSeparate,
       isOwned,
       isRented,
+      SalesExecID,
     } = req.body;
 
     const customerId = nanoid(10); // Generating a 10-character ID using nanoid
@@ -65,7 +66,8 @@ export const createClientPersonalDetails = async (req, res) => {
         isDivorced,
         isSeparate,
         isOwned,
-        isRented
+        isRented,
+        SalesExecID
       );
 
     res.status(StatusCodes.CREATED).json({
@@ -82,13 +84,18 @@ export const createClientPersonalDetails = async (req, res) => {
 
 export const getAllClientPersonalDetails = async (req, res) => {
   try {
-    const allClientPersonalDetails =
-      await clientPersonalDtlsRepository.getAllClientPersonalDetails();
+    const { mobileNo1, salesExecID } = req.query;
 
-    res.status(StatusCodes.OK).json({
-      message: "Client personal details retrieved successfully",
-      allClientPersonalDetails,
-    });
+    const { clients, count } =
+      await clientPersonalDtlsRepository.getAllClientPersonalDetails({
+        mobileNo1,
+        salesExecID,
+      });
+    const responseMessage = `Retrieved ${count} clients`;
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: responseMessage, clients, count });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: "Error retrieving client personal details",

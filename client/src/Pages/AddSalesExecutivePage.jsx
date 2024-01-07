@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import AdminNavbar from "../Components/AdminNavbar";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -28,10 +29,22 @@ const AddSalesExecutivePage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedRowSalesExec, setSelectedRowSalesExec] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
   const [selectedRowClient, setSelectedRowClient] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [fetchedRows, setFetchedRows] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [clientRows, setClientRows] = useState([]);
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const [newUserData, setNewUserData] = useState({
     name: "",
     email: "",
@@ -80,30 +93,68 @@ const AddSalesExecutivePage = () => {
     setIsEditMode(true);
   };
 
-  const handleSave = () => {
+  //saving sales exec
+  const handleSave = async () => {
     setIsEditMode(false);
-    // Perform save logic here if needed
+
+    // Create the payload with the updated data from input fields
+    const payload = {
+      name: selectedRowData.Name,
+      email: selectedRowData.EmailAddr,
+      phoneNumber: selectedRowData.Phone,
+      address: selectedRowData.Address,
+    };
+
+    try {
+      // Assuming you have the ID of the employee
+      const employeeId = selectedRowData.id; // Replace this with the actual ID
+
+      // Send a PATCH request to update the employee by ID
+      const response = await axios.patch(
+        `/api/v1/employee/updateEmployeeById/${employeeId}`,
+        payload
+      );
+
+      if (response.status === 200) {
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Employee updated successfully");
+        setSnackbarOpen(true);
+        fetchSalesExec();
+        // Handle success, reset fields or perform any additional actions
+      } else {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Failed to update employee");
+        setSnackbarOpen(true);
+        // Handle failure scenario
+      }
+    } catch (error) {
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Error updating employee");
+      setSnackbarOpen(true);
+      console.error("Error updating employee:", error.message);
+      // Handle error scenario
+    }
   };
 
   // Replace with your data or initialize as needed
-  const columns = [
+  const SalesExecColumns = [
     { id: "slno", label: "Slno.", minWidth: 100 },
     { id: "name", label: "Name", minWidth: 170 },
     { id: "phoneNumber", label: "Phone Number", minWidth: 170 },
     { id: "amountFloated", label: "Amount", minWidth: 170, align: "center" },
   ];
 
-  const createData = (slno, name, phoneNumber, amountFloated) => {
-    return { slno, name, phoneNumber, amountFloated };
-  };
-
-  const rows = [
-    createData(1, "John Doe", "123-456-7890", 500),
-    createData(2, "Jne Smith", "987-654-3210", 750),
-    createData(3, "Jae Smith", "987-654-2345", 750),
-    createData(4, "Jan Smith", "987-654-3212", 753),
-    createData(5, "Joe Smith", "987-654-3219", 753),
-    // Add more data...
+  const clientColumns = [
+    { id: "slno", label: "Slno.", minWidth: 100, align: "center" },
+    { id: "name", label: "Name", minWidth: 150, align: "center" },
+    {
+      id: "phoneNumber",
+      label: "Phone Number",
+      minWidth: 150,
+      align: "center",
+    },
+    { id: "dateOfLoan", label: "Date of Loan", minWidth: 150, align: "center" },
+    { id: "amount", label: "Amount", minWidth: 150, align: "center" },
   ];
 
   const alternateRowColor = (index) => {
@@ -111,37 +162,59 @@ const AddSalesExecutivePage = () => {
   };
 
   const handleRowSelectSalesExec = (event, row) => {
-    setSelectedRowSalesExec(row.name);
+    setSelectedRowSalesExec(row.Name);
+    setSelectedEmployee(row.id);
     setSelectedRowData(row);
-    console.log(row); // Log the selected row details
+    fetchClients(row.id); // Pass the selected sales exec ID to fetchClients
   };
 
   const handleRowSelectClient = (event, row) => {
-    setSelectedRowClient(row.phoneNumber); // Set the selected client using row.phoneNumber
-    console.log("Selected Client Row:", row); // Log the selected client row details
+    setSelectedRowClient(row.phoneNumber);
+    console.log("Selected Client Row:", row);
   };
 
-  const clientColumns = [
-    { id: "slno", label: "Slno.", minWidth: 50 },
-    { id: "name", label: "Name", minWidth: 100 },
-    { id: "phoneNumber", label: "Phone Number", minWidth: 100 },
-    { id: "dateOfLoan", label: "Date of Loan", minWidth: 100 },
-    { id: "amount", label: "Amount", minWidth: 100, align: "center" },
-  ];
-
-  const createClientData = (slno, name, phoneNumber, dateOfLoan, amount) => {
-    return { slno, name, phoneNumber, dateOfLoan, amount };
+  const fetchSalesExec = async () => {
+    try {
+      const response = await axios.get(
+        "/api/v1/employee/getAllEmployees?Role=Sales%20Exec"
+      );
+      if (response.status === 200) {
+        const { employees } = response.data;
+        setFetchedRows(employees);
+        console.log(employees);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+  const fetchClients = async (salesExecID) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/client/getAllClientPersonalDetails?salesExecID=${salesExecID}`
+      );
+      if (response.status === 200) {
+        const { clients } = response.data;
+        setClientRows(clients); // Update the clientRows state with the fetched data
+        console.log("clients:", clients);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   };
 
-  const clientRows = [
-    createClientData(1, "John Doe", "123-456-7890", "2023-01-01", 500),
-    createClientData(2, "John Doe", "123-456-7891", "2023-01-01", 500),
-    createClientData(3, "John Doe", "123-456-7892", "2023-01-01", 500),
-    createClientData(4, "John Doe", "123-456-7893", "2023-01-01", 500),
-    createClientData(5, "John Doe", "123-456-7894", "2023-01-01", 500),
-    createClientData(6, "John Doe", "123-456-7895", "2023-01-01", 500),
-    // Add more client data...
-  ];
+  useEffect(() => {
+    fetchSalesExec();
+  }, []);
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      fetchClients(selectedEmployee);
+    }
+  }, [selectedEmployee]);
 
   return (
     <>
@@ -150,8 +223,8 @@ const AddSalesExecutivePage = () => {
       <section className="header">
         <Box
           sx={{
-            marginTop: "70px",
-            backgroundColor: "grey.200",
+            marginTop: "63px",
+            backgroundColor: "white",
             width: "100%",
             minHeight: "20px",
             padding: "20px",
@@ -166,18 +239,19 @@ const AddSalesExecutivePage = () => {
         <Box>
           <Box
             sx={{
-              backgroundColor: "grey.200",
+              backgroundColor: "white",
               width: "100%",
-              height: "680px",
+              height: "600px",
               padding: "20px",
             }}
           >
             <Grid container spacing={2} alignItems="stretch">
               <Grid item xs={7}>
+                {/* Sales Exec Table */}
                 <Box
                   sx={{
                     height: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#A4BE7B",
                     width: "100%",
                     display: "flex-col",
                     justifyContent: "center",
@@ -192,7 +266,7 @@ const AddSalesExecutivePage = () => {
                         <TableHead>
                           <TableRow style={{ backgroundColor: "black" }}>
                             <TableCell style={{ background: "black" }} />
-                            {columns.map((column) => (
+                            {SalesExecColumns.map((column) => (
                               <TableCell
                                 key={column.id}
                                 align={column.align}
@@ -208,12 +282,12 @@ const AddSalesExecutivePage = () => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {rows.map((row, index) => (
+                          {fetchedRows.map((row, index) => (
                             <TableRow
                               hover
                               role="checkbox"
                               tabIndex={-1}
-                              key={row.slno}
+                              key={row.id} // Use a unique identifier for the key, assuming row.id exists
                               style={{
                                 backgroundColor: alternateRowColor(index),
                               }}
@@ -224,27 +298,19 @@ const AddSalesExecutivePage = () => {
                             >
                               <TableCell>
                                 <Radio
-                                  value={row.phoneNumber} // Use a unique identifier for the value
-                                  checked={selectedRowSalesExec === row.name} // Compare with the same field used for selection
+                                  value={row.Phone} // Use a unique identifier for the value
+                                  checked={selectedRowSalesExec === row.Name} // Compare with the same field used for selection
                                   onChange={(event) =>
                                     handleRowSelectSalesExec(event, row)
                                   }
                                 />
                               </TableCell>
-                              {columns.map((column) => (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.id !== "slno" ? (
-                                    <>
-                                      {column.format &&
-                                      typeof row[column.id] === "number"
-                                        ? column.format(row[column.id])
-                                        : row[column.id]}
-                                    </>
-                                  ) : (
-                                    <>{row.slno}</>
-                                  )}
-                                </TableCell>
-                              ))}
+                              <TableCell align="center">{index + 1}</TableCell>
+                              <TableCell align="center">{row.Name}</TableCell>
+                              <TableCell align="center">{row.Phone}</TableCell>
+                              <TableCell align="center">
+                                {row.AmountLended || 0}
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -253,7 +319,7 @@ const AddSalesExecutivePage = () => {
                     <TablePagination
                       rowsPerPageOptions={[5, 10, 15]}
                       component="div"
-                      count={rows.length}
+                      count={fetchedRows.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onPageChange={handleChangePage}
@@ -263,8 +329,14 @@ const AddSalesExecutivePage = () => {
                   <Box sx={{ marginTop: "20px", textAlign: "right" }}>
                     <Button
                       variant="contained"
-                      color="primary"
+                      // color="primary"
                       onClick={handleAddUser}
+                      sx={{
+                        backgroundColor: "#285430",
+                        "&:hover": {
+                          backgroundColor: "#224B0C",
+                        },
+                      }}
                     >
                       Add user
                     </Button>
@@ -272,15 +344,17 @@ const AddSalesExecutivePage = () => {
                 </Box>
               </Grid>
               <Grid item xs={5}>
+                {/* Sales Exec Profile  */}
                 <Box
                   sx={{
                     height: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#5F8D4E",
                     width: "100%",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
                     padding: "20px",
+                    borderRadius: "10px",
                   }}
                 >
                   <Box
@@ -292,6 +366,7 @@ const AddSalesExecutivePage = () => {
                       flexDirection: "column",
                       justifyContent: "center",
                       padding: "20px",
+                      borderRadius: "10px",
                     }}
                   >
                     <Box>
@@ -310,12 +385,12 @@ const AddSalesExecutivePage = () => {
                         <Grid item xs={12}>
                           <TextField
                             label="Name"
-                            value={selectedRowData ? selectedRowData.name : ""}
+                            value={selectedRowData ? selectedRowData.Name : ""}
                             disabled={!isEditMode} // Enable/disable based on isEditMode
                             onChange={(e) =>
                               setSelectedRowData({
                                 ...selectedRowData,
-                                name: e.target.value,
+                                Name: e.target.value, // Update 'Name' field in the state
                               })
                             }
                             fullWidth
@@ -324,18 +399,30 @@ const AddSalesExecutivePage = () => {
                         <Grid item xs={12}>
                           <TextField
                             label="Email"
-                            value={selectedRowData ? selectedRowData.email : ""}
+                            value={
+                              selectedRowData ? selectedRowData.EmailAddr : ""
+                            }
                             disabled={!isEditMode} // Enable/disable based on isEditMode
+                            onChange={(e) =>
+                              setSelectedRowData({
+                                ...selectedRowData,
+                                EmailAddr: e.target.value, // Update 'EmailAddr' field in the state
+                              })
+                            }
                             fullWidth
                           />
                         </Grid>
                         <Grid item xs={12}>
                           <TextField
                             label="Phone Number"
-                            value={
-                              selectedRowData ? selectedRowData.phoneNumber : ""
-                            }
+                            value={selectedRowData ? selectedRowData.Phone : ""}
                             disabled={!isEditMode} // Enable/disable based on isEditMode
+                            onChange={(e) =>
+                              setSelectedRowData({
+                                ...selectedRowData,
+                                Phone: e.target.value, // Update 'Phone' field in the state
+                              })
+                            }
                             fullWidth
                           />
                         </Grid>
@@ -343,9 +430,15 @@ const AddSalesExecutivePage = () => {
                           <TextField
                             label="Address"
                             value={
-                              selectedRowData ? selectedRowData.address : ""
+                              selectedRowData ? selectedRowData.Address : ""
                             }
                             disabled={!isEditMode} // Enable/disable based on isEditMode
+                            onChange={(e) =>
+                              setSelectedRowData({
+                                ...selectedRowData,
+                                Address: e.target.value, // Update 'Address' field in the state
+                              })
+                            }
                             fullWidth
                           />
                         </Grid>
@@ -356,7 +449,13 @@ const AddSalesExecutivePage = () => {
                     {isEditMode ? ( // Conditionally render Save/Edit button based on edit mode
                       <Button
                         variant="contained"
-                        color="primary"
+                        // color="primary"
+                        sx={{
+                          backgroundColor: "#285430",
+                          "&:hover": {
+                            backgroundColor: "#224B0C",
+                          },
+                        }}
                         onClick={handleSave}
                       >
                         Save
@@ -366,6 +465,12 @@ const AddSalesExecutivePage = () => {
                         variant="contained"
                         color="primary"
                         onClick={handleEdit}
+                        sx={{
+                          backgroundColor: "#285430",
+                          "&:hover": {
+                            backgroundColor: "#224B0C",
+                          },
+                        }}
                       >
                         Edit
                         <EditIcon fontSize="sm" />
@@ -384,7 +489,7 @@ const AddSalesExecutivePage = () => {
         <Box>
           <Box
             sx={{
-              backgroundColor: "grey.200",
+              backgroundColor: "white",
               width: "100%",
               height: "680px",
               padding: "20px",
@@ -392,10 +497,11 @@ const AddSalesExecutivePage = () => {
           >
             <Grid container spacing={2} alignItems="stretch">
               <Grid item xs={12} md={8}>
+                {/* customer Details Table */}
                 <Box
                   sx={{
                     height: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#5F8D4E",
                     width: "100%",
                     display: "flex-col",
                     justifyContent: "center",
@@ -445,7 +551,7 @@ const AddSalesExecutivePage = () => {
                                 hover
                                 role="checkbox"
                                 tabIndex={-1}
-                                key={row.slno}
+                                key={row.CutomerID} // Assuming CutomerID is a unique identifier
                                 style={{
                                   backgroundColor:
                                     index % 2 === 0 ? "#f2f2f2" : "#dddddd",
@@ -457,25 +563,28 @@ const AddSalesExecutivePage = () => {
                               >
                                 <TableCell>
                                   <Radio
-                                    value={row.phoneNumber} // Use a unique identifier for the value
+                                    value={row.CutomerID} // Use a unique identifier for the value
                                     checked={
-                                      selectedRowClient === row.phoneNumber
-                                    } // Compare with the phoneNumber field used for selection
+                                      selectedRowClient === row.CutomerID
+                                    }
                                     onChange={(event) =>
                                       handleRowSelectClient(event, row)
                                     }
                                   />
                                 </TableCell>
+                                <TableCell align="center">
+                                  {index + 1}
+                                </TableCell>
+                                <TableCell align="center">
+                                  {row.CustomerName}
+                                </TableCell>
+                                <TableCell align="center">
+                                  {row.MobileNo1}
+                                </TableCell>
+
                                 {clientColumns.map((column) => (
-                                  <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                  >
-                                    {column.id !== "slno" ? (
-                                      <>{row[column.id]}</>
-                                    ) : (
-                                      <>{row.slno}</>
-                                    )}
+                                  <TableCell key={column.id} align="center">
+                                    {row[column.id]}
                                   </TableCell>
                                 ))}
                               </TableRow>
@@ -483,6 +592,7 @@ const AddSalesExecutivePage = () => {
                         </TableBody>
                       </Table>
                     </TableContainer>
+
                     <TablePagination
                       rowsPerPageOptions={[5, 10, 15]}
                       component="div"
@@ -498,13 +608,14 @@ const AddSalesExecutivePage = () => {
               <Grid item xs={12} md={4}>
                 <Box
                   sx={{
-                    height: "100%",
-                    backgroundColor: "white",
+                    height: "600px",
+                    backgroundColor: "#A4BE7B",
                     width: "100%",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
                     padding: "20px",
+                    borderRadius: "10px",
                   }}
                 >
                   <Box
@@ -516,6 +627,7 @@ const AddSalesExecutivePage = () => {
                       flexDirection: "column",
                       justifyContent: "center",
                       padding: "20px",
+                      borderRadius: "10px",
                     }}
                   >
                     {/* Content for the white box */}
@@ -576,7 +688,16 @@ const AddSalesExecutivePage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleSaveUser} color="primary">
+          <Button
+            onClick={handleSaveUser}
+            // color="primary"
+            sx={{
+              backgroundColor: "#285430",
+              "&:hover": {
+                backgroundColor: "#224B0C",
+              },
+            }}
+          >
             Save
           </Button>
         </DialogActions>

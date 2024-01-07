@@ -2,39 +2,72 @@ import { StatusCodes } from "http-status-codes";
 import { nanoid } from "nanoid";
 import * as employeeRepository from "../repository/employeeRepository.js";
 
+export const loginEmployee = async (req, res) => {
+  const { phoneNumber, password } = req.body;
+
+  try {
+    const loginResult = await employeeRepository.loginUser(
+      phoneNumber,
+      password
+    );
+
+    if (!loginResult.token) {
+      res.status(404).json({ message: "User not found" }); // Sending 404 if user is not found
+      return;
+    }
+
+    // Send a 201 status upon successful login with the token and a success message
+    res
+      .status(201)
+      .json({ token: loginResult.token, message: "Login successful" });
+  } catch (error) {
+    res.status(500).json({ message: `Error logging in: ${error.message}` });
+  }
+};
+
 export const registerEmployee = async (req, res) => {
   try {
-    // Generate a unique ID with 3 alphabetic characters followed by 3 numeric characters
     const generatedId = nanoid(6)
       .replace(/[^a-zA-Z0-9]/g, "")
       .substring(0, 7);
 
-    const { name, phoneNumber, email, photo, address, govtId, Role } = req.body;
+    const { name, phoneNumber, email, photo, address, govtId, Role, password } =
+      req.body;
 
-    const result = await employeeRepository.createEmployee(
-      generatedId,
-      name,
-      phoneNumber,
-      email,
-      photo,
-      address,
-      govtId,
-      Role
-    );
+    const { generatedId: customerId, token } =
+      await employeeRepository.createEmployee(
+        generatedId,
+        name,
+        phoneNumber,
+        email,
+        photo,
+        address,
+        govtId,
+        Role,
+        password
+      );
 
-    const responseMessage = `Data inserted: success. Index Position: ${result}`;
+    const responseMessage = `Data inserted: success. Employee ID: ${customerId}`;
 
-    res.status(StatusCodes.OK).json({ message: responseMessage, result });
+    res
+      .status(StatusCodes.OK)
+      .json({ message: responseMessage, generatedId: customerId, token });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Error posting name", error: error.message });
+      .json({ message: "Error registering employee", error: error.message });
   }
 };
 
 export const getAllEmployees = async (req, res) => {
   try {
-    const { employees, count } = await employeeRepository.getAllEmployees();
+    const { phoneNumber, EmailAddr, Role } = req.query; // Extract query parameters
+
+    const { employees, count } = await employeeRepository.getAllEmployees({
+      phoneNumber,
+      EmailAddr,
+      Role,
+    });
 
     const responseMessage = `Retrieved ${count} employees`;
 

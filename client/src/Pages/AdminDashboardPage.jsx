@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import { PieChart, Pie, Cell } from "recharts";
+import { Link } from "react-router-dom";
 
 import SalesExeTableComponent from "../Components/SalesExeTableComponent";
 
@@ -29,7 +30,7 @@ const AdminDashboard = () => {
         <Box
           sx={{
             marginTop: "70px",
-            backgroundColor: "grey.200",
+            backgroundColor: "white",
             width: "100%",
             minHeight: "20px",
             padding: "20px",
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
           {/* Adjust the marginTop to make sure the content is below the navbar */}
           <Box
             sx={{
-              backgroundColor: "grey.200",
+              backgroundColor: "white",
               width: "100%",
               minHeight: "40vh",
               padding: "20px", // Adding padding to create space around the cards
@@ -51,10 +52,11 @@ const AdminDashboard = () => {
           >
             <Grid container spacing={2} alignItems="stretch">
               <Grid item xs={6}>
+                {/* clients Chart */}
                 <Box
                   sx={{
                     height: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#A4BE7B",
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
@@ -104,7 +106,15 @@ const AdminDashboard = () => {
                         </PieChart>
                       </Box>
                       <Box sx={{ marginTop: "20px", textAlign: "right" }}>
-                        <Button variant="contained" color="primary">
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "#285430",
+                            "&:hover": {
+                              backgroundColor: "#224B0C",
+                            },
+                          }}
+                        >
                           Explore
                         </Button>
                       </Box>
@@ -114,15 +124,17 @@ const AdminDashboard = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
+                {/* investors chart  */}
                 <Box
                   sx={{
                     height: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#5F8D4E",
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     padding: "20px", // Padding for the inner Box
+                    borderRadius: "10px",
                   }}
                 >
                   <Card variant="outlined" sx={{ width: "100%" }}>
@@ -166,7 +178,15 @@ const AdminDashboard = () => {
                         </PieChart>
                       </Box>
                       <Box sx={{ marginTop: "20px", textAlign: "right" }}>
-                        <Button variant="contained" color="primary">
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "#285430",
+                            "&:hover": {
+                              backgroundColor: "#224B0C",
+                            },
+                          }}
+                        >
                           Explore
                         </Button>
                       </Box>
@@ -180,16 +200,17 @@ const AdminDashboard = () => {
         </Box>
       </section>
       <section>
-        <Box sx={{ backgroundColor: "grey.400", p: 2 }}>
+        <Box sx={{ backgroundColor: "white", p: 2 }}>
           <Grid container spacing={2}>
             {/* Box occupying 3/5th */}
             <Grid item xs={7}>
               <Box
                 sx={{
-                  backgroundColor: "white",
+                  backgroundColor: "#5F8D4E",
                   height: "200px",
                   padding: "20px",
                   height: "550px",
+                  borderRadius: "10px",
                 }}
               >
                 <Box>
@@ -208,19 +229,38 @@ const AdminDashboard = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ mr: "5px" }}
+                    sx={{
+                      mr: "5px",
+                      backgroundColor: "#285430",
+                      "&:hover": {
+                        backgroundColor: "#224B0C",
+                      },
+                    }}
                   >
                     Add More Sales Exec
                   </Button>
-                  <Button variant="contained" color="primary">
-                    See More
-                  </Button>
+                  <Link
+                    to="/admin/addsalesexec"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#285430",
+                        "&:hover": {
+                          backgroundColor: "#224B0C",
+                        },
+                      }}
+                    >
+                      See More
+                    </Button>
+                  </Link>
                 </Box>
               </Box>
             </Grid>
             {/* Box occupying 2/5th */}
             <Grid item xs={5}>
-              <Box sx={{ backgroundColor: "white", height: "200px" }}>
+              <Box sx={{ backgroundColor: "#A4BE7B", height: "200px" }}>
                 {/* Your content for the 2/5th box */}
               </Box>
             </Grid>

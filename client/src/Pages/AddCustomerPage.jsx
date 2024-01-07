@@ -27,7 +27,7 @@ const AddCustomerPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
   const [selectedDate, setSelectedDate] = React.useState(null);
-  const [formData, setFormData] = useState({
+  const [clientPersonalData, setClientPersonalData] = useState({
     CenterName: "",
     CutomerID: "",
     CustomerName: "",
@@ -56,6 +56,9 @@ const AddCustomerPage = () => {
     ResidenceCustYr: "",
     MobileNo1: "",
     MobileNo2: "",
+  });
+
+  const [guarantorData, setGuarantor] = useState({
     GuarantorName: "",
     GrSpouseName: "",
     GrFatherName: "",
@@ -68,10 +71,16 @@ const AddCustomerPage = () => {
     GrAddress: "",
     GrIsOwned: "",
     GrIsRented: "",
+  });
+
+  const [clientBankData, setClientankData] = useState({
     ClAccountDetails: "",
     ClIFSC: "",
     ClBranchName: "",
     ClBankName: "",
+  });
+
+  const [clientHouseHoldData, setClientHouseHoldData] = useState({
     ClLoan: "",
     ClEducation: "",
     ClRent: "",
@@ -81,18 +90,17 @@ const AddCustomerPage = () => {
     ClTotalIncome: "",
     ClTotalExpenses: "",
     ClBalance: "",
-    ClSmartCard: "",
-    ClAadharCard: "",
-    ClVoterId: "",
-    ClPanCard: "",
-    ClOthers1: "",
-    ClOthers2: "",
-    GrSmartCard: "",
-    GrAadharCard: "",
-    GrVoterId: "",
-    GrPanCard: "",
-    GrOthers1: "",
-    GrOthers2: "",
+  });
+  const [verificationData, setVerificationData] = useState({
+    ClLoan: "",
+    ClEducation: "",
+    ClRent: "",
+    ClMedical: "",
+    ClOthers: "",
+    ClTotal: "",
+    ClTotalIncome: "",
+    ClTotalExpenses: "",
+    ClBalance: "",
   });
 
   const [members, setMembers] = useState([
@@ -200,9 +208,9 @@ const AddCustomerPage = () => {
         </Typography>
         <TextField
           label="Center Name"
-          value={formData.CenterName}
+          value={clientPersonalData.CenterName}
           onChange={(e) =>
-            setFormData({ ...formData, CenterName: e.target.value })
+            setFormData({ ...clientPersonalData, CenterName: e.target.value })
           }
           margin="normal"
           variant="outlined" // Change the variant as needed (outlined, standard, filled)
@@ -211,18 +219,18 @@ const AddCustomerPage = () => {
         <br />
         <TextField
           label="Customer Name"
-          value={formData.CustomerName}
+          value={clientPersonalData.CustomerName}
           onChange={(e) =>
-            setFormData({ ...formData, CustomerName: e.target.value })
+            setFormData({ ...clientPersonalData, CustomerName: e.target.value })
           }
           margin="normal"
           sx={{ width: "350px", marginRight: "10px" }}
         />
         <TextField
           label="Spouse Name"
-          value={formData.SpouseName}
+          value={clientPersonalData.SpouseName}
           onChange={(e) =>
-            setFormData({ ...formData, SpouseName: e.target.value })
+            setFormData({ ...clientPersonalData, SpouseName: e.target.value })
           }
           margin="normal"
           sx={{ width: "350px" }}
@@ -230,18 +238,18 @@ const AddCustomerPage = () => {
         <br />
         <TextField
           label="Father Name"
-          value={formData.FatherName}
+          value={clientPersonalData.FatherName}
           onChange={(e) =>
-            setFormData({ ...formData, FatherName: e.target.value })
+            setFormData({ ...clientPersonalData, FatherName: e.target.value })
           }
           margin="normal"
           sx={{ width: "250px", marginRight: "10px" }}
         />
         <TextField
           label="Mother Name"
-          value={formData.MotherName}
+          value={clientPersonalData.MotherName}
           onChange={(e) =>
-            setFormData({ ...formData, MotherName: e.target.value })
+            setFormData({ ...clientPersonalData, MotherName: e.target.value })
           }
           margin="normal"
           sx={{ width: "250px", marginRight: "10px" }}
@@ -249,9 +257,9 @@ const AddCustomerPage = () => {
         <TextField
           type="date"
           label="Date of Birth"
-          value={formData.DateOfBirth}
+          value={clientPersonalData.DateOfBirth}
           onChange={(e) =>
-            setFormData({ ...formData, DateOfBirth: e.target.value })
+            setFormData({ ...clientPersonalData, DateOfBirth: e.target.value })
           }
           InputLabelProps={{
             shrink: true,
@@ -262,8 +270,10 @@ const AddCustomerPage = () => {
         <TextField
           type="number"
           label="Age"
-          value={formData.Age}
-          onChange={(e) => setFormData({ ...formData, Age: e.target.value })}
+          value={clientPersonalData.Age}
+          onChange={(e) =>
+            setFormData({ ...clientPersonalData, Age: e.target.value })
+          }
           margin="normal"
           sx={{ width: "200px", marginRight: "10px" }}
         />
@@ -287,10 +297,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isTatchedHouse}
+              checked={clientPersonalData.isTatchedHouse}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isTatchedHouse: e.target.checked,
                 })
               }
@@ -302,10 +312,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isRoofTiles}
+              checked={clientPersonalData.isRoofTiles}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isRoofTiles: e.target.checked,
                 })
               }
@@ -317,10 +327,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isMetalsheetsRoof}
+              checked={clientPersonalData.isMetalsheetsRoof}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isMetalsheetsRoof: e.target.checked,
                 })
               }
@@ -332,10 +342,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isCementSheetsRoof}
+              checked={clientPersonalData.isCementSheetsRoof}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isCementSheetsRoof: e.target.checked,
                 })
               }
@@ -347,10 +357,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isCementConcreteCeil}
+              checked={clientPersonalData.isCementConcreteCeil}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isCementConcreteCeil: e.target.checked,
                 })
               }
@@ -378,10 +388,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isHindu}
+              checked={clientPersonalData.isHindu}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isHindu: e.target.checked,
                 })
               }
@@ -393,10 +403,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isMuslim}
+              checked={clientPersonalData.isMuslim}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isMuslim: e.target.checked,
                 })
               }
@@ -408,10 +418,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isChristian}
+              checked={clientPersonalData.isChristian}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isChristian: e.target.checked,
                 })
               }
@@ -423,10 +433,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isOthers}
+              checked={clientPersonalData.isOthers}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isOthers: e.target.checked,
                 })
               }
@@ -454,10 +464,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isMarried}
+              checked={clientPersonalData.isMarried}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isMarried: e.target.checked,
                 })
               }
@@ -469,10 +479,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isSingle}
+              checked={clientPersonalData.isSingle}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isSingle: e.target.checked,
                 })
               }
@@ -484,10 +494,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isDivorced}
+              checked={clientPersonalData.isDivorced}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isDivorced: e.target.checked,
                 })
               }
@@ -499,10 +509,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isSeparate}
+              checked={clientPersonalData.isSeparate}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isSeparate: e.target.checked,
                 })
               }
@@ -531,10 +541,10 @@ const AddCustomerPage = () => {
           label="Address"
           multiline
           rows={4} // Adjust the number of rows as needed
-          value={formData.Address}
+          value={clientPersonalData.Address}
           onChange={(e) =>
             setFormData({
-              ...formData,
+              ...clientPersonalData,
               Address: e.target.value,
             })
           }
@@ -545,10 +555,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isOwned}
+              checked={clientPersonalData.isOwned}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isOwned: e.target.checked,
                 })
               }
@@ -560,10 +570,10 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={formData.isRented}
+              checked={clientPersonalData.isRented}
               onChange={(e) =>
                 setFormData({
-                  ...formData,
+                  ...clientPersonalData,
                   isRented: e.target.checked,
                 })
               }
@@ -576,9 +586,12 @@ const AddCustomerPage = () => {
         <TextField
           type="number"
           label="Residence Customer year"
-          value={formData.ResidenceCustYr}
+          value={clientPersonalData.ResidenceCustYr}
           onChange={(e) =>
-            setFormData({ ...formData, ResidenceCustYr: e.target.value })
+            setFormData({
+              ...clientPersonalData,
+              ResidenceCustYr: e.target.value,
+            })
           }
           InputLabelProps={{
             shrink: true,
@@ -606,9 +619,9 @@ const AddCustomerPage = () => {
         <TextField
           type="number"
           label="Mobile Number"
-          value={formData.MobileNo1}
+          value={clientPersonalData.MobileNo1}
           onChange={(e) =>
-            setFormData({ ...formData, MobileNo1: e.target.value })
+            setFormData({ ...clientPersonalData, MobileNo1: e.target.value })
           }
           InputLabelProps={{
             shrink: true,
@@ -619,9 +632,9 @@ const AddCustomerPage = () => {
         <TextField
           type="number"
           label="Alternate Mobile Number"
-          value={formData.MobileNo2}
+          value={clientPersonalData.MobileNo2}
           onChange={(e) =>
-            setFormData({ ...formData, MobileNo2: e.target.value })
+            setFormData({ ...clientPersonalData, MobileNo2: e.target.value })
           }
           InputLabelProps={{
             shrink: true,
@@ -1385,11 +1398,11 @@ const AddCustomerPage = () => {
       >
         <form>
           <ClientPersonalInfo
-            formData={formData}
-            setFormData={setFormData}
+            formData={clientPersonalData}
+            setFormData={setClientPersonalData}
             activeStep={activeStep}
           />
-          <ClientGuarantorDetails
+          {/* <ClientGuarantorDetails
             formData={formData}
             setFormData={setFormData}
             activeStep={activeStep}
@@ -1413,7 +1426,7 @@ const AddCustomerPage = () => {
             formData={formData}
             setFormData={setFormData}
             activeStep={activeStep}
-          />
+          /> */}
           {/* ... (other sections/components for each step if any) */}
         </form>
 

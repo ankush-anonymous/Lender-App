@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,15 +9,16 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import axios from "axios";
 
 const columns = [
-  { id: "slno", label: "Slno.", minWidth: 100 },
-  { id: "name", label: "Name", minWidth: 170 },
+  { id: "slno", label: "Slno.", minWidth: 100, align: "center" },
+  { id: "name", label: "Name", minWidth: 100, align: "center" },
   {
     id: "amountFloated",
     label: "Amount Floated",
-    minWidth: 170,
-    align: "right",
+    minWidth: 100,
+    align: "center",
   },
 ];
 
@@ -31,10 +32,10 @@ const rows = [
   createData(3, "Eclair", 3.79),
   createData(4, "Cupcake", 2.5),
   createData(5, "Gingerbread", 1.5),
-  createData(5, "Gingerbread", 1.5),
 ];
 
 export default function SalesExeTableComponent() {
+  const [fetchedRows, setFetchedRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -50,6 +51,27 @@ export default function SalesExeTableComponent() {
   const alternateRowColor = (index) => {
     return index % 2 === 0 ? "#f2f2f2" : "#dddddd"; // Grayish and blackish colors
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "/api/v1/employee/getAllEmployees?Role=Sales Exec"
+        );
+        if (response.status === 200) {
+          const { employees, count } = response.data; // Destructure employees and count from response.data
+          setFetchedRows(employees); // Set the employees array into the fetchedRows state
+          console.log(employees); // Log the employees array
+        } else {
+          throw new Error("Failed to fetch data");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -73,26 +95,30 @@ export default function SalesExeTableComponent() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {fetchedRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow
                   hover
                   role="checkbox"
                   tabIndex={-1}
-                  key={row.slno}
+                  key={row.id} // Use a unique identifier for the key
                   style={{ backgroundColor: alternateRowColor(index) }}
                 >
                   {columns.map((column) => (
                     <TableCell key={column.id} align={column.align}>
-                      {column.id !== "slno" ? (
+                      {column.id === "slno" ? (
+                        <>{index + 1}</>
+                      ) : column.id === "name" ? (
+                        <>{row.Name}</>
+                      ) : column.id === "amountFloated" ? (
+                        <>{row.AmountLended !== null ? row.AmountLended : 0}</> // Show 0 if AmountLended is null
+                      ) : (
                         <>
                           {column.format && typeof row[column.id] === "number"
                             ? column.format(row[column.id])
                             : row[column.id]}
                         </>
-                      ) : (
-                        <>{row.slno}</>
                       )}
                     </TableCell>
                   ))}
@@ -104,7 +130,7 @@ export default function SalesExeTableComponent() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 15]}
         component="div"
-        count={rows.length}
+        count={fetchedRows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
