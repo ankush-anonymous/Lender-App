@@ -58,6 +58,8 @@ const AddCustomerPage = () => {
     MobileNo2: "",
   });
 
+  const [centerName, setCenterName] = useState("");
+
   const [guarantorData, setGuarantor] = useState({
     GuarantorName: "",
     GrSpouseName: "",
@@ -185,7 +187,11 @@ const AddCustomerPage = () => {
   };
 
   // Client Personal Information component
-  const ClientPersonalInfo = ({ formData, setFormData, activeStep }) => (
+  const ClientPersonalInfo = ({
+    clientPersonalData,
+    setClientPersonalData,
+    activeStep,
+  }) => (
     <Box
       p={5}
       id="client-personal-info"
@@ -208,10 +214,8 @@ const AddCustomerPage = () => {
         </Typography>
         <TextField
           label="Center Name"
-          value={clientPersonalData.CenterName}
-          onChange={(e) =>
-            setFormData({ ...clientPersonalData, CenterName: e.target.value })
-          }
+          value={centerName}
+          onChange={(e) => setCenterName(e.target.value)}
           margin="normal"
           variant="outlined" // Change the variant as needed (outlined, standard, filled)
           sx={{ width: "250px" }} // Adjust the width as needed
@@ -221,7 +225,10 @@ const AddCustomerPage = () => {
           label="Customer Name"
           value={clientPersonalData.CustomerName}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, CustomerName: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              CustomerName: e.target.value,
+            })
           }
           margin="normal"
           sx={{ width: "350px", marginRight: "10px" }}
@@ -230,7 +237,10 @@ const AddCustomerPage = () => {
           label="Spouse Name"
           value={clientPersonalData.SpouseName}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, SpouseName: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              SpouseName: e.target.value,
+            })
           }
           margin="normal"
           sx={{ width: "350px" }}
@@ -240,7 +250,10 @@ const AddCustomerPage = () => {
           label="Father Name"
           value={clientPersonalData.FatherName}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, FatherName: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              FatherName: e.target.value,
+            })
           }
           margin="normal"
           sx={{ width: "250px", marginRight: "10px" }}
@@ -249,7 +262,10 @@ const AddCustomerPage = () => {
           label="Mother Name"
           value={clientPersonalData.MotherName}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, MotherName: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              MotherName: e.target.value,
+            })
           }
           margin="normal"
           sx={{ width: "250px", marginRight: "10px" }}
@@ -259,7 +275,10 @@ const AddCustomerPage = () => {
           label="Date of Birth"
           value={clientPersonalData.DateOfBirth}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, DateOfBirth: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              DateOfBirth: e.target.value,
+            })
           }
           InputLabelProps={{
             shrink: true,
@@ -272,7 +291,10 @@ const AddCustomerPage = () => {
           label="Age"
           value={clientPersonalData.Age}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, Age: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              Age: e.target.value,
+            })
           }
           margin="normal"
           sx={{ width: "200px", marginRight: "10px" }}
@@ -297,11 +319,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isTatchedHouse}
+              checked={clientPersonalData.isTatchedHouse === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isTatchedHouse: e.target.checked,
+                  isTatchedHouse: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isTatchedHouse"
@@ -312,41 +334,41 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isRoofTiles}
+              checked={clientPersonalData.isRoofTiles === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isRoofTiles: e.target.checked,
+                  isRoofTiles: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isRoofTiles"
             />
           }
-          label="Roof Tiles"
+          label="Roof Tiled"
         />
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isMetalsheetsRoof}
+              checked={clientPersonalData.isMetalsheetsRoof === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isMetalsheetsRoof: e.target.checked,
+                  isMetalsheetsRoof: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isMetalsheetsRoof"
             />
           }
-          label="Metal Sheets Roof"
+          label="Metal Sheet Roof"
         />
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isCementSheetsRoof}
+              checked={clientPersonalData.isCementSheetsRoof === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isCementSheetsRoof: e.target.checked,
+                  isCementSheetsRoof: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isCementSheetsRoof"
@@ -357,17 +379,17 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isCementConcreteCeil}
+              checked={clientPersonalData.isCementConcreteCeil === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isCementConcreteCeil: e.target.checked,
+                  isCementConcreteCeil: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isCementConcreteCeil"
             />
           }
-          label="Cement concrete Ceiling"
+          label="Cement Concrete Ceiling"
         />
       </Box>
       {/* Religion */}
@@ -388,11 +410,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isHindu}
+              checked={clientPersonalData.isHindu === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isHindu: e.target.checked,
+                  isHindu: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isHindu"
@@ -403,11 +425,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isMuslim}
+              checked={clientPersonalData.isMuslim === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isMuslim: e.target.checked,
+                  isMuslim: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isMuslim"
@@ -418,11 +440,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isChristian}
+              checked={clientPersonalData.isChristian === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isChristian: e.target.checked,
+                  isChristian: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isChristian"
@@ -433,11 +455,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isOthers}
+              checked={clientPersonalData.isOthers === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isOthers: e.target.checked,
+                  isOthers: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isOthers"
@@ -464,11 +486,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isMarried}
+              checked={clientPersonalData.isMarried === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isMarried: e.target.checked,
+                  isMarried: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isMarried"
@@ -479,11 +501,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isSingle}
+              checked={clientPersonalData.isSingle === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isSingle: e.target.checked,
+                  isSingle: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isSingle"
@@ -494,11 +516,26 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isDivorced}
+              checked={clientPersonalData.isWidow === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isDivorced: e.target.checked,
+                  isWidow: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
+                })
+              }
+              name="isWidow"
+            />
+          }
+          label="Widowed"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={clientPersonalData.isDivorced === "true"} // Convert string to boolean
+              onChange={(e) =>
+                setClientPersonalData({
+                  ...clientPersonalData,
+                  isDivorced: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isDivorced"
@@ -509,17 +546,17 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isSeparate}
+              checked={clientPersonalData.isSeparate === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isSeparate: e.target.checked,
+                  isSeparate: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isSeparate"
             />
           }
-          label="Separate"
+          label="Separated"
         />
       </Box>
       {/* address */}
@@ -543,7 +580,7 @@ const AddCustomerPage = () => {
           rows={4} // Adjust the number of rows as needed
           value={clientPersonalData.Address}
           onChange={(e) =>
-            setFormData({
+            setClientPersonalData({
               ...clientPersonalData,
               Address: e.target.value,
             })
@@ -555,11 +592,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isOwned}
+              checked={clientPersonalData.isOwned === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isOwned: e.target.checked,
+                  isOwned: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isOwned"
@@ -570,11 +607,11 @@ const AddCustomerPage = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={clientPersonalData.isRented}
+              checked={clientPersonalData.isRented === "true"} // Convert string to boolean
               onChange={(e) =>
-                setFormData({
+                setClientPersonalData({
                   ...clientPersonalData,
-                  isRented: e.target.checked,
+                  isRented: e.target.checked ? "true" : "false", // Convert boolean back to string if needed
                 })
               }
               name="isRented"
@@ -582,13 +619,12 @@ const AddCustomerPage = () => {
           }
           label="Rented"
         />
-
         <TextField
           type="number"
           label="Residence Customer year"
           value={clientPersonalData.ResidenceCustYr}
           onChange={(e) =>
-            setFormData({
+            setClientPersonalData({
               ...clientPersonalData,
               ResidenceCustYr: e.target.value,
             })
@@ -621,7 +657,10 @@ const AddCustomerPage = () => {
           label="Mobile Number"
           value={clientPersonalData.MobileNo1}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, MobileNo1: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              MobileNo1: e.target.value,
+            })
           }
           InputLabelProps={{
             shrink: true,
@@ -634,7 +673,10 @@ const AddCustomerPage = () => {
           label="Alternate Mobile Number"
           value={clientPersonalData.MobileNo2}
           onChange={(e) =>
-            setFormData({ ...clientPersonalData, MobileNo2: e.target.value })
+            setClientPersonalData({
+              ...clientPersonalData,
+              MobileNo2: e.target.value,
+            })
           }
           InputLabelProps={{
             shrink: true,
@@ -643,10 +685,21 @@ const AddCustomerPage = () => {
           size=""
         />
       </Box>
+
+      <Box>
+        <Button
+          onClick={() => {
+            console.log(clientPersonalData);
+          }}
+        >
+          print Details
+        </Button>
+      </Box>
       {/* Add more TextField or other input components for each field */}
       {/* Display completion message or complete step button */}
     </Box>
   );
+
   const ClientFamilyInfo = ({ formData, setFormData, activeStep }) => (
     <Box
       p={5}
