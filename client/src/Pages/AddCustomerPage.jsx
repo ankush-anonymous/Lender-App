@@ -16,6 +16,9 @@ import Grid from "@mui/material/Grid";
 
 import ClientPersonalInfo from "../AddClientSections/ClientPersonalInfo";
 import ClientGuarantorDetails from "../AddClientSections/ClientGuarantorDetails";
+import ClientBankDtls from "../AddClientSections/ClientBankDtls";
+import ClinetOtherExpDtls from "../AddClientSections/ClinetOtherExpDtls";
+import ClientVerificationDtls from "../AddClientSections/ClientVerificationDtls";
 
 const steps = [
   "Client Personal Information",
@@ -30,72 +33,7 @@ const AddCustomerPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
   const [selectedDate, setSelectedDate] = React.useState(null);
-  // const [clientPersonalData, setClientPersonalData] = useState({
-  //   CenterName: "",
-  //   CutomerID: "",
-  //   CustomerName: "",
-  //   SpouseName: "",
-  //   FatherName: "",
-  //   MotherName: "",
-  //   DateOfBirth: "",
-  //   Age: "",
-  //   isTatchedHouse: "",
-  //   isRoofTiles: "",
-  //   isMetalsheetsRoof: "",
-  //   isCementSheetsRoof: "",
-  //   isCementConcreteCeil: "",
-  //   isHindu: "",
-  //   isMuslim: "",
-  //   isChristian: "",
-  //   isOthers: "",
-  //   isMarried: "",
-  //   isSingle: "",
-  //   isWidow: "",
-  //   isDivorced: "",
-  //   isSeparate: "",
-  //   Address: "",
-  //   isOwned: "",
-  //   isRented: "",
-  //   ResidenceCustYr: "",
-  //   MobileNo1: "",
-  //   MobileNo2: "",
-  // });
 
-  const [centerName, setCenterName] = useState("");
-
-  const [guarantorData, setGuarantor] = useState({
-    GuarantorName: "",
-    GrSpouseName: "",
-    GrFatherName: "",
-    GrMotherName: "",
-    GrRelation: "",
-    GrDateOfBirth: "",
-    GrAge: "",
-    GrMobileNo1: "",
-    GrMobileNo2: "",
-    GrAddress: "",
-    GrIsOwned: "",
-    GrIsRented: "",
-  });
-
-  const [clientBankData, setClientankData] = useState({
-    ClAccountDetails: "",
-    ClIFSC: "",
-    ClBranchName: "",
-    ClBankName: "",
-  });
-
-  const [clientHouseHoldData, setClientHouseHoldData] = useState({
-    ClLoan: "",
-    ClEducation: "",
-    ClRent: "",
-    ClMedical: "",
-    ClOthers: "",
-    ClTotal: "",
-    ClTotalIncome: "",
-    ClTotalExpenses: "",
-    ClBalance: "",
-  });
   const [verificationData, setVerificationData] = useState({
     ClLoan: "",
     ClEducation: "",
@@ -948,119 +886,119 @@ const AddCustomerPage = () => {
   //     </Box>
   //   </Box>
   // );
-  const ClientBankDetails = ({ formData, setFormData, activeStep }) => (
-    <Box
-      p={5}
-      id="client-bank-details"
-      style={{ display: activeStep === 2 ? "block" : "none" }}
-    >
-      {/* Account Details */}
-      <Box
-        sx={{
-          border: "1px solid #ccc",
-          p: 2,
-          borderRadius: "5px",
-          marginBottom: "5px",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{ marginBottom: 1, fontWeight: "bold" }}
-        >
-          Account Details
-        </Typography>
-        <TextField
-          label="Account Details"
-          value={formData.ClAccountDetails}
-          onChange={(e) =>
-            setFormData({ ...formData, ClAccountDetails: e.target.value })
-          }
-          margin="normal"
-          variant="outlined" // Change the variant as needed (outlined, standard, filled)
-          sx={{ width: "250px" }} // Adjust the width as needed
-        />
-      </Box>
+  // const ClientBankDetails = ({ formData, setFormData, activeStep }) => (
+  //   <Box
+  //     p={5}
+  //     id="client-bank-details"
+  //     style={{ display: activeStep === 2 ? "block" : "none" }}
+  //   >
+  //     {/* Account Details */}
+  //     <Box
+  //       sx={{
+  //         border: "1px solid #ccc",
+  //         p: 2,
+  //         borderRadius: "5px",
+  //         marginBottom: "5px",
+  //       }}
+  //     >
+  //       <Typography
+  //         variant="body2"
+  //         sx={{ marginBottom: 1, fontWeight: "bold" }}
+  //       >
+  //         Account Details
+  //       </Typography>
+  //       <TextField
+  //         label="Account Details"
+  //         value={formData.ClAccountDetails}
+  //         onChange={(e) =>
+  //           setFormData({ ...formData, ClAccountDetails: e.target.value })
+  //         }
+  //         margin="normal"
+  //         variant="outlined" // Change the variant as needed (outlined, standard, filled)
+  //         sx={{ width: "250px" }} // Adjust the width as needed
+  //       />
+  //     </Box>
 
-      {/* IFSC Details  */}
-      <Box
-        sx={{
-          border: "1px solid #ccc",
-          p: 2,
-          borderRadius: "5px",
-          marginBottom: "5px",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{ marginBottom: 1, fontWeight: "bold" }}
-        >
-          IFSC
-        </Typography>
-        <TextField
-          label="IFSC Details"
-          value={formData.ClIFSC}
-          onChange={(e) => setFormData({ ...formData, ClIFSC: e.target.value })}
-          margin="normal"
-          variant="outlined" // Change the variant as needed (outlined, standard, filled)
-          sx={{ width: "250px" }} // Adjust the width as needed
-        />
-      </Box>
+  //     {/* IFSC Details  */}
+  //     <Box
+  //       sx={{
+  //         border: "1px solid #ccc",
+  //         p: 2,
+  //         borderRadius: "5px",
+  //         marginBottom: "5px",
+  //       }}
+  //     >
+  //       <Typography
+  //         variant="body2"
+  //         sx={{ marginBottom: 1, fontWeight: "bold" }}
+  //       >
+  //         IFSC
+  //       </Typography>
+  //       <TextField
+  //         label="IFSC Details"
+  //         value={formData.ClIFSC}
+  //         onChange={(e) => setFormData({ ...formData, ClIFSC: e.target.value })}
+  //         margin="normal"
+  //         variant="outlined" // Change the variant as needed (outlined, standard, filled)
+  //         sx={{ width: "250px" }} // Adjust the width as needed
+  //       />
+  //     </Box>
 
-      {/* Branch Name */}
-      <Box
-        sx={{
-          border: "1px solid #ccc",
-          p: 2,
-          borderRadius: "5px",
-          marginBottom: "5px",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{ marginBottom: 1, fontWeight: "bold" }}
-        >
-          Bank's Branch Name
-        </Typography>
-        <TextField
-          label="Branch Name"
-          value={formData.ClBranchName}
-          onChange={(e) =>
-            setFormData({ ...formData, ClBranchName: e.target.value })
-          }
-          margin="normal"
-          variant="outlined" // Change the variant as needed (outlined, standard, filled)
-          sx={{ width: "250px" }} // Adjust the width as needed
-        />
-      </Box>
+  //     {/* Branch Name */}
+  //     <Box
+  //       sx={{
+  //         border: "1px solid #ccc",
+  //         p: 2,
+  //         borderRadius: "5px",
+  //         marginBottom: "5px",
+  //       }}
+  //     >
+  //       <Typography
+  //         variant="body2"
+  //         sx={{ marginBottom: 1, fontWeight: "bold" }}
+  //       >
+  //         Bank's Branch Name
+  //       </Typography>
+  //       <TextField
+  //         label="Branch Name"
+  //         value={formData.ClBranchName}
+  //         onChange={(e) =>
+  //           setFormData({ ...formData, ClBranchName: e.target.value })
+  //         }
+  //         margin="normal"
+  //         variant="outlined" // Change the variant as needed (outlined, standard, filled)
+  //         sx={{ width: "250px" }} // Adjust the width as needed
+  //       />
+  //     </Box>
 
-      {/* Bank Name */}
-      <Box
-        sx={{
-          border: "1px solid #ccc",
-          p: 2,
-          borderRadius: "5px",
-          marginBottom: "5px",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{ marginBottom: 1, fontWeight: "bold" }}
-        >
-          Bank's Name
-        </Typography>
-        <TextField
-          label="Bank Name"
-          value={formData.ClBankName}
-          onChange={(e) =>
-            setFormData({ ...formData, ClBankName: e.target.value })
-          }
-          margin="normal"
-          variant="outlined" // Change the variant as needed (outlined, standard, filled)
-          sx={{ width: "250px" }} // Adjust the width as needed
-        />
-      </Box>
-    </Box>
-  );
+  //     {/* Bank Name */}
+  //     <Box
+  //       sx={{
+  //         border: "1px solid #ccc",
+  //         p: 2,
+  //         borderRadius: "5px",
+  //         marginBottom: "5px",
+  //       }}
+  //     >
+  //       <Typography
+  //         variant="body2"
+  //         sx={{ marginBottom: 1, fontWeight: "bold" }}
+  //       >
+  //         Bank's Name
+  //       </Typography>
+  //       <TextField
+  //         label="Bank Name"
+  //         value={formData.ClBankName}
+  //         onChange={(e) =>
+  //           setFormData({ ...formData, ClBankName: e.target.value })
+  //         }
+  //         margin="normal"
+  //         variant="outlined" // Change the variant as needed (outlined, standard, filled)
+  //         sx={{ width: "250px" }} // Adjust the width as needed
+  //       />
+  //     </Box>
+  //   </Box>
+  // );
 
   const ClientOtherDetails = ({ formData, setFormData, activeStep }) => (
     <Box
@@ -1454,7 +1392,10 @@ const AddCustomerPage = () => {
       >
         <Box>
           {activeStep === 0 && <ClientPersonalInfo />}
+          {activeStep === 2 && <ClientBankDtls />}
+          {activeStep === 3 && <ClinetOtherExpDtls />}
           {activeStep === 4 && <ClientGuarantorDetails />}
+          {activeStep === 5 && <ClientVerificationDtls />}
         </Box>
 
         {/* stepper next level */}

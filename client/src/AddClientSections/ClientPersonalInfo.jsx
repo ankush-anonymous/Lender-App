@@ -382,7 +382,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
               name="isRented"
             />
           }
-          label="Owned"
+          label="Rented"
         />
         <TextField
           type="number"
