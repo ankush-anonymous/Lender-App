@@ -6,12 +6,12 @@ export const loginEmployee = async (req, res) => {
   const { phoneNumber, password } = req.body;
 
   try {
-    const loginResult = await employeeRepository.loginUser(
+    const { token, role } = await employeeRepository.loginUser(
       phoneNumber,
       password
     );
 
-    if (!loginResult.token) {
+    if (!token) {
       res.status(404).json({ message: "User not found" }); // Sending 404 if user is not found
       return;
     }
@@ -19,7 +19,7 @@ export const loginEmployee = async (req, res) => {
     // Send a 201 status upon successful login with the token and a success message
     res
       .status(201)
-      .json({ token: loginResult.token, message: "Login successful" });
+      .json({ token: token, role: role, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: `Error logging in: ${error.message}` });
   }

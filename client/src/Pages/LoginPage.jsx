@@ -14,6 +14,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [access, setAccess] = useState("");
 
   const handleLogin = async () => {
     try {
@@ -21,12 +22,11 @@ const LoginPage = () => {
         phoneNumber,
         password,
       });
-
-      // Assuming the server returns a token in response.data.token
-      const { token } = response.data;
-
-      // Store the token in localStorage
+      console.log(response);
+      const { token, role } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      setAccess(role);
       setShowSuccess(true);
       setShowError(false);
     } catch (error) {
@@ -120,7 +120,14 @@ const LoginPage = () => {
           </Box>
         </Box>
         {showSuccess && (
-          <Link to="/admin/dashboard" style={{ textDecoration: "none" }}>
+          <Link
+            to={
+              access === "SalesExec"
+                ? "/sales-exec/addcustomer"
+                : "/admin/dashboard"
+            }
+            style={{ textDecoration: "none" }}
+          >
             <Button
               variant="contained"
               color="primary"

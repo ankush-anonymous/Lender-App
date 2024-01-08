@@ -17,7 +17,7 @@ export const loginUser = async (phoneNumber, password) => {
     }
 
     const user = userRows[0];
-
+    const role = user.Role;
     // Check if the provided password matches the hashed password in the database
     const isPasswordValid = await bcryptjs.compare(password, user.password);
 
@@ -43,7 +43,7 @@ export const loginUser = async (phoneNumber, password) => {
       }
     );
 
-    return { token };
+    return { token, role };
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
   }
