@@ -8,6 +8,7 @@ import LoginPage from "./Pages/LoginPage.jsx";
 import AdminDashboardPage from "./Pages/AdminDashboardPage";
 import AddSalesExecutivePage from "./Pages/AddSalesExecutivePage";
 import AddCustomerPage from "./Pages/AddCustomerPage";
+import CenterReportPage from "./Pages/CenterReportPage";
 
 axios.defaults.baseURL = "http://localhost:5000";
 
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/center" element={<CenterReportPage />} />
           <Route
             path="/admin/addsalesexec"
             element={<AddSalesExecutivePage />}
