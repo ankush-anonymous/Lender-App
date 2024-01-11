@@ -56,7 +56,7 @@ export default function SalesExeTableComponent() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "/api/v1/employee/getAllEmployees?Role=Sales Exec"
+          "/api/v1/employee/getAllEmployees?Role=SalesExec"
         );
         if (response.status === 200) {
           const { employees, count } = response.data; // Destructure employees and count from response.data

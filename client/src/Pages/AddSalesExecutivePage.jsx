@@ -176,7 +176,7 @@ const AddSalesExecutivePage = () => {
   const fetchSalesExec = async () => {
     try {
       const response = await axios.get(
-        "/api/v1/employee/getAllEmployees?Role=Sales%20Exec"
+        "/api/v1/employee/getAllEmployees?Role=SalesExec"
       );
       if (response.status === 200) {
         const { employees } = response.data;

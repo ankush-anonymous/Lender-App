@@ -16,7 +16,9 @@ import ClientPersonalDetailsRouter from "./routes/clientPersonalDtlsRoutes.js";
 import ClientGuarentorRouter from "./routes/clientGuarentorRoutes.js";
 import ClientBankDtlsRouter from "./routes/clientBankDetailsRoutes.js";
 import ClientOtherExpensesRouter from "./routes/clientOtherExpensesRoutes.js";
-import ClientVerificationIdRoutes from "./routes/clientVerificationIdRoutes.js";
+import ClientVerificationIdRouter from "./routes/clientVerificationIdRoutes.js";
+import CashFlowRouter from "./routes/cashFlowRoutes.js";
+import centerDetailsRouter from "./routes/centerDetailsRoutes.js";
 
 app.use(express.json());
 app.use(cors());
@@ -27,7 +29,9 @@ app.use("/api/v1/roles", RolesRouter);
 app.use("/api/v1/client", ClientPersonalDetailsRouter);
 app.use("/api/v1/client/guarantor", ClientGuarentorRouter);
 app.use("/api/v1/client/household", ClientOtherExpensesRouter);
-app.use("/api/v1/client/verification", ClientVerificationIdRoutes);
+app.use("/api/v1/client/verification", ClientVerificationIdRouter);
+app.use("/api/v1/cashFlow", CashFlowRouter);
+app.use("/api/v1/center", centerDetailsRouter);
 
 const port = process.env.PORT || 5000;
 
