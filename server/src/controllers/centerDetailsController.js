@@ -2,10 +2,15 @@ import { StatusCodes } from "http-status-codes";
 import * as centerDetailsRepository from "../repository/centerDetailsRepository.js";
 import { nanoid } from "nanoid";
 
+const generateUniqueIdentifier = () => {
+  const randomDigits = nanoid(5);
+  return `CEN${randomDigits}`;
+};
+
 export const createCenterEntry = async (req, res) => {
   try {
     const { centerCode, centerName, IFSC, TotalAmount } = req.body;
-    const id = nanoid(10); // Generating a unique ID using nanoid
+    const id = generateUniqueIdentifier();
 
     const result = await centerDetailsRepository.createCenterEntry(
       id,

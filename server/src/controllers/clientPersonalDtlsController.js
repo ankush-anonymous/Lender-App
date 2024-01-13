@@ -2,6 +2,11 @@ import { StatusCodes } from "http-status-codes";
 import * as clientPersonalDtlsRepository from "../repository/clientPersonalDtlsRepository.js";
 import { nanoid } from "nanoid";
 
+const generateUniqueIdentifier = () => {
+  const randomDigits = nanoid(5);
+  return `CL${randomDigits}`;
+};
+
 export const createClientPersonalDetails = async (req, res) => {
   try {
     const {
@@ -35,7 +40,7 @@ export const createClientPersonalDetails = async (req, res) => {
       SalesExecID,
     } = req.body;
 
-    const customerId = nanoid(10); // Generating a 10-character ID using nanoid
+    const id = generateUniqueIdentifier();
 
     const result =
       await clientPersonalDtlsRepository.createClientPersonalDetails(

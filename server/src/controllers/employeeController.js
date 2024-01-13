@@ -2,6 +2,11 @@ import { StatusCodes } from "http-status-codes";
 import { nanoid } from "nanoid";
 import * as employeeRepository from "../repository/employeeRepository.js";
 
+const generateUniqueIdentifier = () => {
+  const randomDigits = nanoid(5);
+  return `EMP${randomDigits}`;
+};
+
 export const loginEmployee = async (req, res) => {
   const { phoneNumber, password } = req.body;
 
@@ -27,9 +32,7 @@ export const loginEmployee = async (req, res) => {
 
 export const registerEmployee = async (req, res) => {
   try {
-    const generatedId = nanoid(6)
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .substring(0, 7);
+    const generatedId = generateUniqueIdentifier();
 
     const { name, phoneNumber, email, photo, address, govtId, Role, password } =
       req.body;

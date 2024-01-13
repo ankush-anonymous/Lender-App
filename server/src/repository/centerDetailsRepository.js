@@ -22,13 +22,44 @@ export const createCenterEntry = async (
   }
 };
 
-export const getAllCenterEntries = async () => {
+export const getAllCenterEntries = async ({
+  centerCode,
+  centerName,
+  IFSC,
+  TotalAmount,
+}) => {
   try {
-    const sql = "SELECT * FROM centerDetails";
-    const [rows] = await pool.query(sql);
-    return rows;
+    let sql = "SELECT * FROM centerDetails WHERE 1";
+    const queryParams = [];
+
+    if (centerCode) {
+      sql += " AND centerCode = ?";
+      queryParams.push(centerCode);
+    }
+
+    if (centerName) {
+      sql += " AND centerName = ?";
+      queryParams.push(centerName);
+    }
+
+    if (IFSC) {
+      sql += " AND IFSC = ?";
+      queryParams.push(IFSC);
+    }
+
+    if (TotalAmount) {
+      sql += " AND TotalAmount = ?";
+      queryParams.push(TotalAmount);
+    }
+
+    const [rows] = await pool.query(sql, queryParams);
+    const count = rows.length; // Get the count of rows
+
+    return { centers: rows, count }; // Return center details based on parameters
   } catch (error) {
-    throw new Error("Error retrieving center entries from the database");
+    throw new Error(
+      "Error retrieving center details with given parameters from the database"
+    );
   }
 };
 
