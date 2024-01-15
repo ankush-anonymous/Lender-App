@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
@@ -26,6 +26,11 @@ const LoginPage = () => {
       const { token, role, SalesExecId } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      if (role === "SalesExec") {
+        localStorage.setItem("SalesExec-authorized", "true");
+      } else if (role === "Admin") {
+        localStorage.setItem("Admin-authorized", "true");
+      }
       localStorage.setItem("id", SalesExecId);
       setAccess(role);
       setShowSuccess(true);
@@ -35,6 +40,10 @@ const LoginPage = () => {
       setShowError(true);
     }
   };
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   return (
     <Box

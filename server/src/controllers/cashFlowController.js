@@ -2,6 +2,11 @@ import { StatusCodes } from "http-status-codes";
 import * as cashFlowRepository from "../repository/cashFlowRepository.js";
 import { nanoid } from "nanoid";
 
+const generateUniqueIdentifier = () => {
+  const randomDigits = nanoid(5);
+  return `TRANS${randomDigits}`;
+};
+
 export const createEntry = async (req, res) => {
   try {
     const {
@@ -18,7 +23,7 @@ export const createEntry = async (req, res) => {
       Status,
     } = req.body;
 
-    const id = nanoid(10);
+    const id = generateUniqueIdentifier();
 
     const result = await cashFlowRepository.createEntry(
       id,

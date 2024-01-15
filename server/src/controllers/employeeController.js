@@ -11,7 +11,7 @@ export const loginEmployee = async (req, res) => {
   const { phoneNumber, password } = req.body;
 
   try {
-    const { token, role } = await employeeRepository.loginUser(
+    const { token, role, userId } = await employeeRepository.loginUser(
       phoneNumber,
       password
     );
@@ -22,9 +22,12 @@ export const loginEmployee = async (req, res) => {
     }
 
     // Send a 201 status upon successful login with the token and a success message
-    res
-      .status(201)
-      .json({ token: token, role: role, message: "Login successful" });
+    res.status(201).json({
+      token: token,
+      role: role,
+      SalesExecId: userId,
+      message: "Login successful",
+    });
   } catch (error) {
     res.status(500).json({ message: `Error logging in: ${error.message}` });
   }

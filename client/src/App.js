@@ -26,10 +26,21 @@ function App() {
             path="/admin/addsalesexec"
             element={<AddSalesExecutivePage />}
           />
-          <Route path="/sales-exec/addcustomer" element={<AddCustomerPage />} />
+          <Route
+            path="/sales-exec/addcustomer"
+            element={
+              <ProtectedRouteSalesExec>
+                <AddCustomerPage />
+              </ProtectedRouteSalesExec>
+            }
+          />
           <Route
             path="/sales-exec/dashboard"
-            element={<SalesExecutiveDashboardPage />}
+            element={
+              <ProtectedRouteSalesExec>
+                <SalesExecutiveDashboardPage />
+              </ProtectedRouteSalesExec>
+            }
           />
         </Routes>
       </BrowserRouter>
@@ -38,3 +49,16 @@ function App() {
 }
 
 export default App;
+
+export const ProtectedRouteSalesExec = ({ children }) => {
+  const isSalesExecAuthorized =
+    localStorage.getItem("SalesExec-authorized") === "true";
+  const isAdminAuthorized = localStorage.getItem("Admin-authorized") === "true";
+
+  if (isSalesExecAuthorized || isAdminAuthorized) {
+    return children;
+  } else {
+    // Redirect to login if not authorized
+    return <Navigate to="/login" />;
+  }
+};

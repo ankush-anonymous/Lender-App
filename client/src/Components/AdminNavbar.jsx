@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom"; // Import Link
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,11 +20,12 @@ const drawerWidth = 240;
 const navItems = [
   { name: "Dashboard", link: "/admin/dashboard" },
   { name: "Center", link: "/admin/center" },
-  { name: "Logout", link: "/logout" },
+  { name: "Logout" },
 ];
 
 const AdminNavbar = ({ window }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const navigate = useNavigate(); // Get the navigate function
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -34,26 +35,37 @@ const AdminNavbar = ({ window }) => {
     setMobileOpen(false); // Close the drawer after clicking an item
 
     if (item === "Logout") {
-      // Handle logout by clearing localStorage and redirecting to the login page
+      // Handle logout by clearing localStorage and navigating to "/login"
       localStorage.clear();
+      navigate("/login"); // Use navigate to go to the "/login" route
     }
   };
 
   const drawer = (
     <Box sx={{ display: { xs: "none", sm: "block" } }}>
       {navItems.map((item) => (
-        <Button
-          key={item.name}
-          sx={{ color: "#fff" }}
-          onClick={() => handleDrawerItem(item.name)}
-        >
-          <Link
-            to={item.link}
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            {item.name}
-          </Link>
-        </Button>
+        <React.Fragment key={item.name}>
+          {item.name === "Logout" ? (
+            <Button
+              sx={{ color: "#fff" }}
+              onClick={() => handleDrawerItem(item.name)}
+            >
+              {item.name}
+            </Button>
+          ) : (
+            <Link
+              to={item.link}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Button
+                sx={{ color: "#fff" }}
+                onClick={() => handleDrawerItem(item.name)}
+              >
+                {item.name}
+              </Button>
+            </Link>
+          )}
+        </React.Fragment>
       ))}
     </Box>
   );
