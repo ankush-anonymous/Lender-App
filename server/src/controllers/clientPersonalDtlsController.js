@@ -25,7 +25,7 @@ export const createClientPersonalDetails = async (req, res) => {
       isRoofTiles,
       isMetalsheets,
       isCementSheetsRoof,
-      isCementContcreteCeil,
+      isCementConcreteCeil,
       isHindu,
       isMuslim,
       isChristian,
@@ -40,7 +40,7 @@ export const createClientPersonalDetails = async (req, res) => {
       SalesExecID,
     } = req.body;
 
-    const id = generateUniqueIdentifier();
+    const customerId = generateUniqueIdentifier();
 
     const result =
       await clientPersonalDtlsRepository.createClientPersonalDetails(
@@ -60,7 +60,7 @@ export const createClientPersonalDetails = async (req, res) => {
         isRoofTiles,
         isMetalsheets,
         isCementSheetsRoof,
-        isCementContcreteCeil,
+        isCementConcreteCeil,
         isHindu,
         isMuslim,
         isChristian,

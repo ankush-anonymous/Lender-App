@@ -17,7 +17,7 @@ export const createClientPersonalDetails = async (
   isRoofTiles = false,
   isMetalsheets = false,
   isCementSheetsRoof = false,
-  isCementContcreteCeil = false,
+  isCementConcreteCeil = false,
   isHindu = false,
   isMuslim = false,
   isChristian = false,
@@ -33,10 +33,10 @@ export const createClientPersonalDetails = async (
 ) => {
   try {
     const sql = `INSERT INTO ClientPersonal (
-      CenterName, CutomerID, CustomerName, SpouseName, FatherName, MotherName,
+      CenterName, CustomerId, CustomerName, SpouseName, FatherName, MotherName,
       DateOfBirth, Age, Address, ResidenceCustYr, MobileNo1, MobileNo2,
       isTatchedHouse, isRoofTiles, isMetalsheets, isCementSheetsRoof,
-      isCementContcreteCeil, isHindu, isMuslim, isChristian, isOthers,
+      isCementConcreteCeil, isHindu, isMuslim, isChristian, isOthers,
       isMarried, isSingle, isWidow, isDivorced, isSeparate, isOwned, isRented,SalesExecID
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
@@ -57,7 +57,7 @@ export const createClientPersonalDetails = async (
       isRoofTiles,
       isMetalsheets,
       isCementSheetsRoof,
-      isCementContcreteCeil,
+      isCementConcreteCeil,
       isHindu,
       isMuslim,
       isChristian,
