@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   Button,
 } from "@mui/material";
+import axios from "axios";
 
 const ClientPersonalInfo = ({ activeStep }) => {
   const [centerName, setCenterName] = useState("");
@@ -37,42 +38,57 @@ const ClientPersonalInfo = ({ activeStep }) => {
   const [residenceCustYr, setResidenceCustYr] = useState("");
   const [mobileNo1, setMobileNo1] = useState("");
   const [mobileNo2, setMobileNo2] = useState("");
+  const [SalesExecID, setSalesExecID] = useState("");
 
-  const handleSaveData = () => {
+  const handleSaveData = async () => {
+    setSalesExecID(localStorage.getItem("id"));
+
     // Create an object to hold all the data
     const clientPersonalData = {
-      CenterName: centerName,
-      CutomerID: cutomerID,
-      CustomerName: customerName,
-      SpouseName: spouseName,
-      FatherName: fatherName,
-      MotherName: motherName,
-      DateOfBirth: dateOfBirth,
-      Age: age,
-      isTatchedHouse: isTatchedHouse,
-      isRoofTiles: isRoofTiles,
-      isMetalsheetsRoof: isMetalsheetsRoof,
-      isCementSheetsRoof: isCementSheetsRoof,
-      isCementConcreteCeil: isCementConcreteCeil,
-      isHindu: isHindu,
-      isMuslim: isMuslim,
-      isChristian: isChristian,
-      isOthers: isOthers,
-      isMarried: isMarried,
-      isSingle: isSingle,
-      isWidow: isWidow,
-      isDivorced: isDivorced,
-      isSeparate: isSeparate,
-      Address: address,
-      isOwned: isOwned,
-      isRented: isRented,
-      ResidenceCustYr: residenceCustYr,
-      MobileNo1: mobileNo1,
-      MobileNo2: mobileNo2,
+      centerName,
+      customerName,
+      spouseName,
+      fatherName,
+      motherName,
+      dateOfBirth,
+      age,
+      address,
+      residenceCustYr,
+      mobileNo1,
+      mobileNo2,
+      isTatchedHouse,
+      isRoofTiles,
+      isMetalsheets: isMetalsheetsRoof,
+      isCementSheetsRoof,
+      isCementContcreteCeil: isCementConcreteCeil,
+      isHindu,
+      isMuslim,
+      isChristian,
+      isOthers,
+      isMarried,
+      isSingle,
+      isWidow,
+      isDivorced,
+      isSeparate,
+      isOwned,
+      isRented,
+      SalesExecID: localStorage.getItem("id"), // Corrected assignment
       // ... add other fields here
     };
-    // Perform action to save data here (e.g., send to API, update state, etc.)
-    console.log(clientPersonalData); // Log data for demonstration purposes
+
+    try {
+      // Perform action to save data here (e.g., send to API, update state, etc.)
+      console.log("Front-end data:", clientPersonalData);
+
+      const response = await axios.post(
+        "/api/v1/client/createClientPersonalDetails",
+        clientPersonalData
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error(error.response.data);
+    }
   };
 
   return (

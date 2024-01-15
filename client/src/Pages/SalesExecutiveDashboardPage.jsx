@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminNavbar from "../Components/AdminNavbar";
+import SalesExecNavbar from "../Components/SalesExecNavbar";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Select from "react-select";
@@ -118,7 +118,7 @@ const SalesExecutiveDashboardPage = () => {
 
   return (
     <>
-      <AdminNavbar />
+      <SalesExecNavbar />
       <Box mt={10}>
         <section>
           <Box

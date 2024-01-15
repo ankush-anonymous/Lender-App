@@ -89,52 +89,6 @@ const AddCustomerPage = () => {
     setCompleted({});
   };
 
-  // const ClientFamilyInfo = ({ formData, setFormData, activeStep }) => (
-  //   <Box
-  //     p={5}
-  //     id="client-personal-info"
-  //     style={{ display: activeStep === 1 ? "block" : "none" }}
-  //   >
-  //     {members.map((member, index) => (
-  //       <Box
-  //         key={index}
-  //         sx={{
-  //           border: "1px solid #ccc",
-  //           p: 2,
-  //           borderRadius: "5px",
-  //           marginBottom: "5px",
-  //         }}
-  //       >
-  //         <Typography
-  //           variant="body2"
-  //           sx={{ marginBottom: 1, fontWeight: "bold" }}
-  //         >
-  //           Member Information {index + 1}
-  //         </Typography>
-  //         <TextField
-  //           label="Member Name"
-  //           value={member.MemberName}
-  //           onChange={(e) =>
-  //             handleMemberChange(index, "MemberName", e.target.value)
-  //           }
-  //           margin="normal"
-  //           variant="outlined"
-  //           sx={{ width: "250px" }}
-  //         />
-  //         {/* Repeat similar TextFields for Relation, Age, Occupation, Education, Income */}
-  //         <br />
-  //         <Button
-  //           variant="contained"
-  //           color="secondary"
-  //           onClick={() => deleteMember(index)}
-  //         >
-  //           Delete Member
-  //         </Button>
-  //       </Box>
-  //     ))}
-  //   </Box>
-  // );
-
   return (
     <Box
       sx={{

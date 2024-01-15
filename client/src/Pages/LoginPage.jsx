@@ -23,9 +23,10 @@ const LoginPage = () => {
         password,
       });
       console.log(response);
-      const { token, role } = response.data;
+      const { token, role, SalesExecId } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("id", SalesExecId);
       setAccess(role);
       setShowSuccess(true);
       setShowError(false);
@@ -123,7 +124,7 @@ const LoginPage = () => {
           <Link
             to={
               access === "SalesExec"
-                ? "/sales-exec/addcustomer"
+                ? "/sales-exec/dashboard"
                 : "/admin/dashboard"
             }
             style={{ textDecoration: "none" }}

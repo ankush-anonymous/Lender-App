@@ -1,5 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom"; // Import Link
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,7 +17,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
+const navItems = [
+  { name: "Dashboard", link: "/admin/dashboard" },
+  { name: "Center", link: "/admin/center" },
+  { name: "Logout", link: "/logout" },
+];
 
 const AdminNavbar = ({ window }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -25,21 +30,31 @@ const AdminNavbar = ({ window }) => {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const handleDrawerItem = (item) => {
+    setMobileOpen(false); // Close the drawer after clicking an item
+
+    if (item === "Logout") {
+      // Handle logout by clearing localStorage and redirecting to the login page
+      localStorage.clear();
+    }
+  };
+
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        LenderApp
-      </Typography>
-      <Divider />
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+    <Box sx={{ display: { xs: "none", sm: "block" } }}>
+      {navItems.map((item) => (
+        <Button
+          key={item.name}
+          sx={{ color: "#fff" }}
+          onClick={() => handleDrawerItem(item.name)}
+        >
+          <Link
+            to={item.link}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            {item.name}
+          </Link>
+        </Button>
+      ))}
     </Box>
   );
 
@@ -70,8 +85,17 @@ const AdminNavbar = ({ window }) => {
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }}>
-                {item}
+              <Button
+                key={item.name}
+                sx={{ color: "#fff" }}
+                onClick={() => handleDrawerItem(item.name)}
+              >
+                <Link
+                  to={item.link}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  {item.name}
+                </Link>
               </Button>
             ))}
           </Box>
@@ -84,7 +108,7 @@ const AdminNavbar = ({ window }) => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
