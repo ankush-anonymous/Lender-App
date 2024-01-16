@@ -4,7 +4,7 @@ import axios from "axios";
 
 const ClientBankDtls = ({ activeStep }) => {
   const [accountNo, setAccountNo] = useState("");
-  const [ifcs, setIfcs] = useState("");
+  const [ifsc, setIfsc] = useState("");
   const [branchName, setBranchName] = useState("");
   const [bankName, setBankName] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -20,10 +20,10 @@ const ClientBankDtls = ({ activeStep }) => {
   const handleSaveData = async () => {
     // Create an object to hold all the data
     const clientBankDtls = {
-      accountNo,
-      ifcs,
-      branchName,
-      bankName,
+      AccountNo: accountNo,
+      IFSC: ifsc,
+      BranchName: branchName,
+      BankName: bankName,
     };
 
     try {
@@ -31,11 +31,13 @@ const ClientBankDtls = ({ activeStep }) => {
         `/api/v1/client/bankdetails/updateClientBankDetailsById/${clientId}`,
         clientBankDtls
       );
-      setIsSaved(true);
+      console.log(response.data);
+      localStorage.setItem("BankID: ", response.data.id);
       setIsSaved(true);
       setSuccessMessage(
         "Client Bank Details Updated Successfully. Proceed Further."
       );
+      setShowSuccess(true);
     } catch (error) {
       console.error(error.response.data);
     }
@@ -86,8 +88,8 @@ const ClientBankDtls = ({ activeStep }) => {
           </Typography>
           <TextField
             label="IFSC Details"
-            value={ifcs}
-            onChange={(e) => setIfcs(e.target.value)}
+            value={ifsc}
+            onChange={(e) => setIfsc(e.target.value)}
             margin="normal"
             variant="outlined"
             sx={{ width: "250px" }}

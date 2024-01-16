@@ -1,7 +1,7 @@
 import pool from "../../db/connect.js";
 
 export const createClientPersonalDetails = async (
-  centerName,
+  centerId,
   customerId,
   customerName,
   spouseName,
@@ -33,7 +33,7 @@ export const createClientPersonalDetails = async (
 ) => {
   try {
     const sql = `INSERT INTO ClientPersonal (
-      CenterName, CustomerId, CustomerName, SpouseName, FatherName, MotherName,
+      centerId, CustomerId, CustomerName, SpouseName, FatherName, MotherName,
       DateOfBirth, Age, Address, ResidenceCustYr, MobileNo1, MobileNo2,
       isTatchedHouse, isRoofTiles, isMetalsheets, isCementSheetsRoof,
       isCementConcreteCeil, isHindu, isMuslim, isChristian, isOthers,
@@ -41,7 +41,7 @@ export const createClientPersonalDetails = async (
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
     const [result] = await pool.query(sql, [
-      centerName,
+      centerId,
       customerId,
       customerName,
       spouseName,
@@ -111,7 +111,7 @@ export const getAllClientPersonalDetails = async ({
 
 export const getClientPersonalById = async (customerId) => {
   try {
-    const sql = "SELECT * FROM clientpersonal WHERE CutomerID = ?";
+    const sql = "SELECT * FROM clientpersonal WHERE CustomerId = ?";
     const [rows] = await pool.query(sql, [customerId]);
 
     if (rows.length === 0) {
@@ -140,7 +140,7 @@ export const updateClientPersonalById = async (id, updatedFields) => {
 
     const updateQuery = `UPDATE ClientPersonal SET ${fieldEntries
       .map(([key]) => `${key} = ?`)
-      .join(", ")} WHERE CutomerID = ?`;
+      .join(", ")} WHERE CustomerId = ?`;
 
     const [result] = await pool.query(updateQuery, fieldValues);
 
@@ -150,6 +150,7 @@ export const updateClientPersonalById = async (id, updatedFields) => {
 
     return true; // Return true indicating successful update
   } catch (error) {
+    console.log(error);
     throw new Error("Error updating client personal details in the database");
   }
 };

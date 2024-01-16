@@ -57,12 +57,38 @@ export const updateClientBankDetailsById = async (id, updatedFields) => {
       .map(([key]) => `${key} = ?`)
       .join(", ")} WHERE id = ?`;
     const [result] = await pool.query(updateQuery, fieldValues);
-
+    console.log(updateQuery);
     if (result.affectedRows === 0) {
       return false;
     }
+    const updatedClient = getClientBankDetailsById(id);
+    return updatedClient;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating client bank details in the database");
+  }
+};
+
+export const updateClientBankDetailsByClientId = async (id, updatedFields) => {
+  try {
+    const fieldEntries = Object.entries(updatedFields);
+    const fieldValues = fieldEntries.map(([key, value]) => value);
+    fieldValues.push(id);
+
+    const updateQuery = `UPDATE ClientBankDetails SET ${fieldEntries
+      .map(([key]) => `${key} = ?`)
+      .join(", ")} WHERE clientID = ?`;
+    const [result] = await pool.query(updateQuery, fieldValues);
+    console.log(updateQuery);
+    if (result.affectedRows === 0) {
+      return false;
+    }
+
+    const updatedClient = await getClientBankDetailsById(result.id);
+    console.log(result);
     return true;
   } catch (error) {
+    console.log(error);
     throw new Error("Error updating client bank details in the database");
   }
 };

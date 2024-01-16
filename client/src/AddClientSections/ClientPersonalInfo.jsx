@@ -60,7 +60,6 @@ const ClientPersonalInfo = ({ activeStep }) => {
     const response = await axios.get("/api/v1/center/getAllCenterDetails");
     if (Array.isArray(response.data.centers)) {
       setListOfCenters(response.data.centers);
-      console.log("List of centers updated:", response.data.centers);
     } else {
       console.error("Invalid response data format:", response.data.centers);
     }
@@ -73,7 +72,6 @@ const ClientPersonalInfo = ({ activeStep }) => {
 
   const handleCenterSelect = (selectedOption) => {
     setSelectedCenter(selectedOption);
-    console.log(selectedOption.value);
   };
 
   const initialiseBankDtls = async (customerId) => {
@@ -85,6 +83,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
         "/api/v1/client/bankdetails/createClientBankDetails",
         bankDetails
       );
+      localStorage.setItem("BankDtlsId: ", response.data.id);
       setSuccessMessage("Bank Details Initialized");
       setShowSuccess(true);
     } catch (error) {
@@ -100,7 +99,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     setSalesExecID(localStorage.getItem("id"));
 
     const clientPersonalData = {
-      centerName: selectedCenter.label,
+      centerId: selectedCenter.label,
       customerName,
       spouseName,
       fatherName,
@@ -162,7 +161,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     setSalesExecID(localStorage.getItem("id"));
 
     const clientPersonalData = {
-      centerName: selectedCenter.label,
+      centerId: selectedCenter.value,
       customerName,
       spouseName,
       fatherName,
@@ -192,6 +191,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
       SalesExecID: localStorage.getItem("id"), // Corrected assignment
       // ... add other fields here
     };
+    console.log("clientPersonalData: ", clientPersonalData);
 
     try {
       const response = await axios.patch(
@@ -217,8 +217,9 @@ const ClientPersonalInfo = ({ activeStep }) => {
       const dataExists = response.data.clientPersonal;
       console.log(dataExists);
       const selectedCenterOption = CenterOptions.find(
-        (option) => option.label === dataExists.CenterName
+        (option) => option.value === dataExists.centerId
       );
+      // console.log("yes:", selectedCenterOption);
 
       setSelectedCenter(selectedCenterOption);
       setCustomerId(dataExists.CustomerId || "");
@@ -258,7 +259,6 @@ const ClientPersonalInfo = ({ activeStep }) => {
     fetchListOfCenters();
     const customerId = localStorage.getItem("CustomerId");
     if (customerId) {
-      console.log("Customer Exists", customerId);
       setIsExists(true);
       setIsSaved(true);
       setFormData(customerId);
@@ -267,7 +267,6 @@ const ClientPersonalInfo = ({ activeStep }) => {
 
   return (
     <>
-      {" "}
       <Box p={5} id="client-personal-info">
         {/* Personal info */}
         <Box
@@ -306,7 +305,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
                   zIndex: "9999 !important",
                 }),
               }}
-              value={selectedCenter} // You need to set value to null or undefined for the custom styling to take effect
+              value={selectedCenter} // Ensure 'value' is being set correctly
               onChange={handleCenterSelect}
               options={CenterOptions}
               placeholder="Select Center"

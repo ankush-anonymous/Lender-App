@@ -10,7 +10,7 @@ const generateUniqueIdentifier = () => {
 export const createClientPersonalDetails = async (req, res) => {
   try {
     const {
-      centerName,
+      centerId,
       customerName,
       spouseName,
       fatherName,
@@ -44,7 +44,7 @@ export const createClientPersonalDetails = async (req, res) => {
 
     const result =
       await clientPersonalDtlsRepository.createClientPersonalDetails(
-        centerName,
+        centerId,
         customerId,
         customerName,
         spouseName,
@@ -159,7 +159,7 @@ export const updateClientPersonalDetailsById = async (req, res) => {
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Error updating client personal details",
+      message: "INTERNAL_SERVER_ERROR",
       error: error.message,
     });
   }

@@ -21,6 +21,10 @@ router.patch(
   "/updateClientBankDetailsById/:id",
   clientBankDetailsController.updateClientBankDetailsById
 );
+router.patch(
+  "/updateClientBankDetailsByClientId/:id",
+  clientBankDetailsController.updateClientBankDetailsByClientId
+);
 router.delete(
   "/deleteClientBankDetailsById/:id",
   clientBankDetailsController.deleteClientBankDetailsById

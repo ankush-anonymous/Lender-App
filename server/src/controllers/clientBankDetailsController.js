@@ -68,7 +68,38 @@ export const updateClientBankDetailsById = async (req, res) => {
       id,
       updatedFields
     );
+    console.log(result);
+    if (!result) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Client bank details not found or not updated",
+        result: result,
+      });
+    }
 
+    const updatedDetails = await clientBankRepository.getClientBankDetailsById(
+      id
+    );
+    res.status(StatusCodes.OK).json({
+      message: "Client bank details updated successfully",
+      result: updatedDetails,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Error updating client bank details",
+      error: error.message,
+    });
+  }
+};
+
+export const updateClientBankDetailsByClientId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedFields = req.body;
+    const result = await clientBankRepository.updateClientBankDetailsByClientId(
+      id,
+      updatedFields
+    );
+    console.log(result);
     if (!result) {
       return res
         .status(StatusCodes.NOT_FOUND)
