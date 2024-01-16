@@ -1,10 +1,10 @@
 import pool from "../../db/connect.js";
 
-export const createEntry = async (
+export const createCashFlowEntry = async (
   ID,
   SalesExecID,
-  Date,
-  CollectionDate,
+  dateOfLoan,
+  DayOfCollection,
   CenterID,
   CustomerID,
   LoanAmount,
@@ -15,12 +15,13 @@ export const createEntry = async (
   Status
 ) => {
   try {
-    const sql = `INSERT INTO cashFlow (ID, SalesExecID, Date, CollectionDate, CenterID, CustomerID, LoanAmount, Interest, CurrentPayCount, PayCount, PrincipalAmount, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO cashFlow (ID, SalesExecID, dateOfLoan, DayOfCollection, CenterID, CustomerID, LoanAmount, Interest, CurrentPayCount, PayCount, PrincipalAmount, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
     const [result] = await pool.query(sql, [
       ID,
       SalesExecID,
-      Date,
-      CollectionDate,
+      dateOfLoan,
+      DayOfCollection,
       CenterID,
       CustomerID,
       LoanAmount,
@@ -30,16 +31,23 @@ export const createEntry = async (
       PrincipalAmount,
       Status,
     ]);
+
+    console.log("Inserted Cash Flow Entry:", result);
+
     return result;
   } catch (error) {
-    throw new Error("Error creating entry in the database");
+    console.error(
+      "Error creating cash flow entry in the database:",
+      error.message
+    );
+    throw new Error("Error creating cash flow entry in the database");
   }
 };
 
-export const getAllEntries = async ({
+export const getAllCashFlowEntries = async ({
   SalesExecID,
-  DateOfLoan,
-  DateOfCollection,
+  dateOfLoan,
+  DayOfCollection,
   CenterID,
   CustomerID,
   LoanAmount,
@@ -57,14 +65,14 @@ export const getAllEntries = async ({
       queryParams.push(SalesExecID);
     }
 
-    if (DateOfLoan) {
-      sql += " AND DateOfLoan = ?";
-      queryParams.push(DateOfLoan);
+    if (dateOfLoan) {
+      sql += " AND dateOfLoan = ?";
+      queryParams.push(dateOfLoan);
     }
 
-    if (DateOfCollection) {
-      sql += " AND DateOfCollection = ?";
-      queryParams.push(DateOfCollection);
+    if (DayOfCollection) {
+      sql += " AND DayOfCollection = ?";
+      queryParams.push(DayOfCollection);
     }
 
     if (CenterID) {
@@ -111,7 +119,7 @@ export const getAllEntries = async ({
   }
 };
 
-export const getEntryById = async (ID) => {
+export const getCashFlowEntryById = async (ID) => {
   try {
     const sql = "SELECT * FROM cashFlow WHERE ID = ?";
     const [rows] = await pool.query(sql, [ID]);

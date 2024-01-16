@@ -28,6 +28,7 @@ app.use("/api/v1/employee", EmployeeRouter);
 app.use("/api/v1/roles", RolesRouter);
 app.use("/api/v1/client", ClientPersonalDetailsRouter);
 app.use("/api/v1/client/guarantor", ClientGuarentorRouter);
+app.use("/api/v1/client/bankdetails", ClientBankDtlsRouter);
 app.use("/api/v1/client/household", ClientOtherExpensesRouter);
 app.use("/api/v1/client/verification", ClientVerificationIdRouter);
 app.use("/api/v1/cashFlow", CashFlowRouter);

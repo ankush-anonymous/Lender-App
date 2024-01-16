@@ -96,6 +96,8 @@ export const getAllClientPersonalDetails = async ({
       queryParams.push(salesExecID);
     }
 
+    console.log(sql);
+
     const [rows] = await pool.query(sql, queryParams);
     const count = rows.length; // Get the count of rows
 

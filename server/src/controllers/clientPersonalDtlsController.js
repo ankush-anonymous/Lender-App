@@ -89,11 +89,11 @@ export const createClientPersonalDetails = async (req, res) => {
 
 export const getAllClientPersonalDetails = async (req, res) => {
   try {
-    const { mobileNo1, salesExecID } = req.query;
+    const { MobileNo1, salesExecID } = req.query;
 
     const { clients, count } =
       await clientPersonalDtlsRepository.getAllClientPersonalDetails({
-        mobileNo1,
+        MobileNo1,
         salesExecID,
       });
     const responseMessage = `Retrieved ${count} clients`;

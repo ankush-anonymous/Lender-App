@@ -25,7 +25,7 @@ export const createEntry = async (req, res) => {
 
     const id = generateUniqueIdentifier();
 
-    const result = await cashFlowRepository.createEntry(
+    const result = await cashFlowRepository.createCashFlowEntry(
       id,
       SalesExecID,
       Date,
@@ -67,7 +67,7 @@ export const getAllEntries = async (req, res) => {
       Status,
     } = req.query;
 
-    const result = await cashFlowRepository.getAllEntries({
+    const result = await cashFlowRepository.getAllCashFlowEntries({
       SalesExecID,
       DateOfLoan,
       DateOfCollection,
@@ -92,7 +92,7 @@ export const getAllEntries = async (req, res) => {
 export const getEntryById = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await cashFlowRepository.getEntryById(id);
+    const result = await cashFlowRepository.getCashFlowEntryById(id);
 
     if (!result) {
       return res
