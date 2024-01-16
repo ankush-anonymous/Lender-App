@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -9,10 +9,12 @@ import {
   Alert,
 } from "@mui/material";
 import axios from "axios";
+import Select from "react-select";
+import { AlignHorizontalLeftSharp } from "@mui/icons-material";
 
 const ClientPersonalInfo = ({ activeStep }) => {
   const [centerName, setCenterName] = useState("");
-  const [cutomerID, setCutomerID] = useState("");
+  const [customerId, setCustomerId] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [spouseName, setSpouseName] = useState("");
   const [fatherName, setFatherName] = useState("");
@@ -40,16 +42,65 @@ const ClientPersonalInfo = ({ activeStep }) => {
   const [mobileNo1, setMobileNo1] = useState("");
   const [mobileNo2, setMobileNo2] = useState("");
   const [SalesExecID, setSalesExecID] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+  const [isExists, setIsExists] = useState(false);
+  const [dataExists, setDataExists] = useState({});
 
+  //for alerts
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  //for center selection
+  const [selectedCenter, setSelectedCenter] = useState(null);
+  const [listOfCenters, setListOfCenters] = useState([]);
+
+  const fetchListOfCenters = async () => {
+    const response = await axios.get("/api/v1/center/getAllCenterDetails");
+    if (Array.isArray(response.data.centers)) {
+      setListOfCenters(response.data.centers);
+      console.log("List of centers updated:", response.data.centers);
+    } else {
+      console.error("Invalid response data format:", response.data.centers);
+    }
+  };
+
+  const CenterOptions = listOfCenters.map((center) => ({
+    value: center.id,
+    label: center.centerName, // Adjust this based on your data structure
+  }));
+
+  const handleCenterSelect = (selectedOption) => {
+    setSelectedCenter(selectedOption);
+    console.log(selectedOption.value);
+  };
+
+  const initialiseBankDtls = async (customerId) => {
+    try {
+      const bankDetails = {
+        clientID: customerId,
+      };
+      const response = await axios.post(
+        "/api/v1/client/bankdetails/createClientBankDetails",
+        bankDetails
+      );
+      setSuccessMessage("Bank Details Initialized");
+      setShowSuccess(true);
+    } catch (error) {
+      console.log(error);
+      setAlertMessage(
+        "Bank Details not initialized. Please contact the developer"
+      );
+      setShowAlert(true);
+    }
+  };
 
   const handleSaveData = async () => {
     setSalesExecID(localStorage.getItem("id"));
 
-    // Create an object to hold all the data
     const clientPersonalData = {
-      centerName,
+      centerName: selectedCenter.label,
       customerName,
       spouseName,
       fatherName,
@@ -64,7 +115,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
       isRoofTiles,
       isMetalsheets: isMetalsheetsRoof,
       isCementSheetsRoof,
-      isCementContcreteCeil: isCementConcreteCeil,
+      isCementConcreteCeil,
       isHindu,
       isMuslim,
       isChristian,
@@ -83,38 +134,21 @@ const ClientPersonalInfo = ({ activeStep }) => {
     try {
       // Perform action to save data here (e.g., send to API, update state, etc.)
       const flag = await axios.get(
-        `/api/v1/client/getAllClientPersonalDetails?mobileNo1=${clientPersonalData.mobileNo1}`,
+        `/api/v1/client/getAllClientPersonalDetails?MobileNo1=${clientPersonalData.mobileNo1}`,
         clientPersonalData
       );
 
-      if (!flag) {
+      if (flag.data.count === 0) {
         const response = await axios.post(
           "/api/v1/client/createClientPersonalDetails",
           clientPersonalData
         );
 
-        const customerId = response.data.customerId;
-
-        const bankUpdate = await axios.post(
-          "/api/v1/client/bankdetails/createClientBankDetails",
-          customerId
-        );
-
-        const guarantorUpdate = await axios.post(
-          "/api/v1/client/guarantor/createClientGuarantorDetails"
-        );
-
-        const houseHoldUpdate = await axios.post(
-          "/api/v1/client/createClientPersonalDetails",
-          customerId
-        );
-
-        const identityUpdate = await axios.post(
-          "/api/v1/client/createClientPersonalDetails",
-          customerId
-        );
-
-        localStorage.setItem("CustomerId", customerId);
+        setCustomerId(response.data.customerId);
+        const bankDtls = await initialiseBankDtls(response.data.customerId);
+        localStorage.setItem("CustomerId", response.data.customerId);
+        setIsSaved(true);
+        setSuccessMessage("Client Created Successfully. Proceed Further.");
       } else {
         setAlertMessage("Client Already registered with this Phone Number.");
         setShowAlert(true);
@@ -123,6 +157,113 @@ const ClientPersonalInfo = ({ activeStep }) => {
       console.error(error.response.data);
     }
   };
+
+  const handleUpdateData = async () => {
+    setSalesExecID(localStorage.getItem("id"));
+
+    const clientPersonalData = {
+      centerName: selectedCenter.label,
+      customerName,
+      spouseName,
+      fatherName,
+      motherName,
+      dateOfBirth,
+      age,
+      address,
+      residenceCustYr,
+      mobileNo1,
+      mobileNo2,
+      isTatchedHouse,
+      isRoofTiles,
+      isMetalsheets: isMetalsheetsRoof,
+      isCementSheetsRoof,
+      isCementConcreteCeil,
+      isHindu,
+      isMuslim,
+      isChristian,
+      isOthers,
+      isMarried,
+      isSingle,
+      isWidow,
+      isDivorced,
+      isSeparate,
+      isOwned,
+      isRented,
+      SalesExecID: localStorage.getItem("id"), // Corrected assignment
+      // ... add other fields here
+    };
+
+    try {
+      const response = await axios.patch(
+        `/api/v1/client/updateClientPersonalDetailsById/${customerId}`,
+        clientPersonalData
+      );
+      console.log(response);
+      if (response.status === 200) {
+        setSuccessMessage("Data Updated Successfully");
+        setShowSuccess(true);
+      }
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const setFormData = async (customerId) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/client/getClientPersonalDetailsById/${customerId}`
+      );
+
+      const dataExists = response.data.clientPersonal;
+      console.log(dataExists);
+      const selectedCenterOption = CenterOptions.find(
+        (option) => option.label === dataExists.CenterName
+      );
+
+      setSelectedCenter(selectedCenterOption);
+      setCustomerId(dataExists.CustomerId || "");
+      setCustomerName(dataExists.CustomerName || "");
+      setSpouseName(dataExists.SpouseName || "");
+      setFatherName(dataExists.FatherName || "");
+      setMotherName(dataExists.MotherName || "");
+      setDateOfBirth(dataExists.DateOfBirth || "");
+      setAge(dataExists.Age || "");
+      setIsTatchedHouse(Boolean(dataExists.isTatchedHouse));
+      setIsRoofTiles(Boolean(dataExists.isRoofTiles));
+      setIsMetalsheetsRoof(Boolean(dataExists.isMetalsheets));
+      setIsCementSheetsRoof(Boolean(dataExists.isCementSheetsRoof));
+      setIsCementConcreteCeil(Boolean(dataExists.isCementConcreteCeil));
+      setIsHindu(Boolean(dataExists.isHindu));
+      setIsMuslim(Boolean(dataExists.isMuslim));
+      setIsChristian(Boolean(dataExists.isChristian));
+      setIsOthers(Boolean(dataExists.isOthers));
+      setIsMarried(Boolean(dataExists.isMarried));
+      setIsSingle(Boolean(dataExists.isSingle));
+      setIsWidow(Boolean(dataExists.isWidow));
+      setIsDivorced(Boolean(dataExists.isDivorced));
+      setIsSeparate(Boolean(dataExists.isSeparate));
+      setAddress(dataExists.Address || "");
+      setIsOwned(Boolean(dataExists.isOwned));
+      setIsRented(Boolean(dataExists.isRented));
+      setResidenceCustYr(dataExists.ResidenceCustYr || "");
+      setMobileNo1(dataExists.MobileNo1 || "");
+      setMobileNo2(dataExists.MobileNo2 || "");
+      setSalesExecID(dataExists.SalesExecID || "");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchListOfCenters();
+    const customerId = localStorage.getItem("CustomerId");
+    if (customerId) {
+      console.log("Customer Exists", customerId);
+      setIsExists(true);
+      setIsSaved(true);
+      setFormData(customerId);
+    }
+  }, []);
 
   return (
     <>
@@ -143,14 +284,34 @@ const ClientPersonalInfo = ({ activeStep }) => {
           >
             Personal Information
           </Typography>
-          <TextField
-            label="Center Name"
-            value={centerName}
-            onChange={(e) => setCenterName(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            sx={{ width: "250px" }}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              borderRadius: "10px",
+              marginTop: "10px",
+            }}
+          >
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  width: "250px",
+                  height: "50px",
+                  zIndex: "0",
+                }),
+                provided: (baseStyles) => ({
+                  ...baseStyles,
+                  zIndex: "9999 !important",
+                }),
+              }}
+              value={selectedCenter} // You need to set value to null or undefined for the custom styling to take effect
+              onChange={handleCenterSelect}
+              options={CenterOptions}
+              placeholder="Select Center"
+            />
+          </Box>
           <br />
           <TextField
             label="Customer Name"
@@ -482,16 +643,28 @@ const ClientPersonalInfo = ({ activeStep }) => {
           />
         </Box>
 
-        <Box>
-          <Button onClick={handleSaveData}>Save Data</Button>
-        </Box>
         {/* Add more TextField or other input components for each field */}
         {/* Display completion message or complete step button */}
       </Box>
       {showAlert && <Alert severity="error">{alertMessage}</Alert>}
-      <Button variant="outlined" onClick={handleSaveData}>
-        Save Data
-      </Button>
+      {showSuccess && <Alert severity="success">{successMessage}</Alert>}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "5px",
+        }}
+      >
+        {!isSaved ? (
+          <Button variant="outlined" onClick={handleSaveData}>
+            Save Data
+          </Button>
+        ) : (
+          <Button variant="outlined" onClick={handleUpdateData}>
+            Update Data
+          </Button>
+        )}
+      </Box>
     </>
   );
 };

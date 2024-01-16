@@ -92,14 +92,19 @@ const AddCustomerPage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "grey",
+        backgroundColor: "#86A789",
         height: "100%",
-        marginTop: "70px",
+        marginTop: "65px",
         padding: "20px",
       }}
     >
       <SalesExecNavbar />
-      <Box height="20%" bgcolor="white" p={"20px"}>
+      <Box
+        height="20%"
+        bgcolor="white"
+        p={"20px"}
+        sx={{ borderRadius: "10px" }}
+      >
         {/* Stepper */}
         <Box sx={{ width: "100%" }}>
           <Stepper activeStep={activeStep} alternativeLabel>
@@ -114,7 +119,7 @@ const AddCustomerPage = () => {
       <Box
         height="80%"
         bgcolor="white"
-        sx={{ display: "flex-col", marginTop: "10px" }}
+        sx={{ display: "flex-col", marginTop: "10px", borderRadius: "10px" }}
       >
         <Box>
           {activeStep === 0 && <ClientPersonalInfo />}

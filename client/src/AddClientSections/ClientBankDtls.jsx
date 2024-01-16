@@ -1,25 +1,41 @@
 import React, { useState } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Typography, TextField, Button, Alert } from "@mui/material";
 import axios from "axios";
 
 const ClientBankDtls = ({ activeStep }) => {
-  const [clAccountDetails, setClAccountDetails] = useState("");
-  const [clIFSC, setClIFSC] = useState("");
-  const [clBranchName, setClBranchName] = useState("");
-  const [clBankName, setClBankName] = useState("");
+  const [accountNo, setAccountNo] = useState("");
+  const [ifcs, setIfcs] = useState("");
+  const [branchName, setBranchName] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  //for alerts
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const clientId = localStorage.getItem("CustomerId");
 
   const handleSaveData = async () => {
     // Create an object to hold all the data
-    const clientPersonalData = {
-      clAccountDetails,
-      clIFSC,
-      clBranchName,
-      clBankName,
-      clientID: localStorage.getItem("CustomerId"), // Corrected assignment
-      // ... add other fields here
+    const clientBankDtls = {
+      accountNo,
+      ifcs,
+      branchName,
+      bankName,
     };
 
     try {
+      const response = await axios.patch(
+        `/api/v1/client/bankdetails/updateClientBankDetailsById/${clientId}`,
+        clientBankDtls
+      );
+      setIsSaved(true);
+      setIsSaved(true);
+      setSuccessMessage(
+        "Client Bank Details Updated Successfully. Proceed Further."
+      );
     } catch (error) {
       console.error(error.response.data);
     }
@@ -41,12 +57,12 @@ const ClientBankDtls = ({ activeStep }) => {
             variant="body2"
             sx={{ marginBottom: 1, fontWeight: "bold" }}
           >
-            Account Details
+            Account Number
           </Typography>
           <TextField
-            label="Account Details"
-            value={clAccountDetails}
-            onChange={(e) => setClAccountDetails(e.target.value)}
+            label="Account Number"
+            value={accountNo}
+            onChange={(e) => setAccountNo(e.target.value)}
             margin="normal"
             variant="outlined"
             sx={{ width: "250px" }}
@@ -70,8 +86,8 @@ const ClientBankDtls = ({ activeStep }) => {
           </Typography>
           <TextField
             label="IFSC Details"
-            value={clIFSC}
-            onChange={(e) => setClIFSC(e.target.value)}
+            value={ifcs}
+            onChange={(e) => setIfcs(e.target.value)}
             margin="normal"
             variant="outlined"
             sx={{ width: "250px" }}
@@ -95,8 +111,8 @@ const ClientBankDtls = ({ activeStep }) => {
           </Typography>
           <TextField
             label="Branch Name"
-            value={clBranchName}
-            onChange={(e) => setClBranchName(e.target.value)}
+            value={branchName}
+            onChange={(e) => setBranchName(e.target.value)}
             margin="normal"
             variant="outlined"
             sx={{ width: "250px" }}
@@ -120,17 +136,33 @@ const ClientBankDtls = ({ activeStep }) => {
           </Typography>
           <TextField
             label="Bank Name"
-            value={clBankName}
-            onChange={(e) => setClBankName(e.target.value)}
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
             margin="normal"
             variant="outlined"
             sx={{ width: "250px" }}
           />
         </Box>
       </Box>
-      <Button variant="outlined" onClick={handleSaveData}>
-        Save Data
-      </Button>
+      {showAlert && <Alert severity="error">{alertMessage}</Alert>}
+      {showSuccess && <Alert severity="success">{successMessage}</Alert>}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "5px",
+        }}
+      >
+        {!isSaved ? (
+          <Button variant="outlined" onClick={handleSaveData}>
+            Save Data
+          </Button>
+        ) : (
+          <Button variant="outlined" onClick={handleSaveData}>
+            Update Data
+          </Button>
+        )}
+      </Box>
     </>
   );
 };
