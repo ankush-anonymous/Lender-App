@@ -22,7 +22,6 @@ const LoginPage = () => {
         phoneNumber,
         password,
       });
-      console.log(response);
       const { token, role, SalesExecId } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
