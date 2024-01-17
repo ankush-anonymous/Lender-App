@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Typography, TextField, Grid } from "@mui/material";
+import { Box, Typography, TextField, Grid, Alert, Button } from "@mui/material";
+import axios from "axios";
 
 const ClientVerificationDtls = () => {
   const [clSmartCard, setClSmartCard] = useState("");
@@ -14,6 +15,82 @@ const ClientVerificationDtls = () => {
   const [grPanCard, setGrPanCard] = useState("");
   const [grOthers1, setGrOthers1] = useState("");
   const [grOthers2, setGrOthers2] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  //for alerts
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const verificationId = localStorage.getItem("VerificationId");
+  const customerId = localStorage.getItem("CustomerId");
+
+  const handleSaveData = async () => {
+    // Create an object to hold all the data
+    const clientVerificationDtls = {
+      GrSmartCard: grSmartCard,
+      GrAadharCard: grAadharCard,
+      GrPanCard: grPanCard,
+      GrVoterId: clVoterId,
+      GrOthers1: grOthers1,
+      GrOthers2: grOthers2,
+      ClSmartCard: clSmartCard,
+      ClAadharCard: clAadharCard,
+      ClVoterId: clVoterId,
+      ClPanCard: clPanCard,
+      ClOthers1: clOthers1,
+      ClOthers2: clOthers2,
+      customerId: customerId,
+    };
+
+    try {
+      const response = await axios.patch(
+        `/api/v1/client/verification/updateVerification/${verificationId}`,
+        clientVerificationDtls
+      );
+      setIsSaved(true);
+      setSuccessMessage(
+        "Client Verification Details Updated Successfully. Proceed Further."
+      );
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const handleUpdateData = async () => {
+    // Create an object to hold all the data
+    const clientVerificationDtls = {
+      GrSmartCard: grSmartCard,
+      GrAadharCard: grAadharCard,
+      GrPanCard: grPanCard,
+      GrVoterId: clVoterId,
+      GrOthers1: grOthers1,
+      GrOthers2: grOthers2,
+      ClSmartCard: clSmartCard,
+      ClAadharCard: clAadharCard,
+      ClVoterId: clVoterId,
+      ClPanCard: clPanCard,
+      ClOthers1: clOthers1,
+      ClOthers2: clOthers2,
+      customerId: customerId,
+    };
+
+    try {
+      const response = await axios.patch(
+        `/api/v1/client/household/updateClientHouseHoldById/${verificationId}`,
+        clientVerificationDtls
+      );
+      setIsSaved(true);
+      setSuccessMessage(
+        "Client Verification Details Updated Successfully. Proceed Further."
+      );
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
 
   return (
     <>
@@ -152,6 +229,25 @@ const ClientVerificationDtls = () => {
             </Box>
           </Grid>
         </Grid>
+      </Box>
+      {showAlert && <Alert severity="error">{alertMessage}</Alert>}
+      {showSuccess && <Alert severity="success">{successMessage}</Alert>}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "5px",
+        }}
+      >
+        {!isSaved ? (
+          <Button variant="outlined" onClick={handleSaveData}>
+            Save Data
+          </Button>
+        ) : (
+          <Button variant="outlined" onClick={handleUpdateData}>
+            Update Data
+          </Button>
+        )}
       </Box>
     </>
   );
