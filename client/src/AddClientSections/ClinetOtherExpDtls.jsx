@@ -3,15 +3,15 @@ import { Box, Typography, TextField, Grid, Alert, Button } from "@mui/material";
 import axios from "axios";
 
 const ClinetOtherExpDtls = () => {
-  const [clLoan, setClLoan] = useState("");
-  const [clEducation, setClEducation] = useState("");
-  const [clRent, setClRent] = useState("");
-  const [clMedical, setClMedical] = useState("");
-  const [clOthers, setClOthers] = useState("");
-  const [clTotal, setClTotal] = useState("");
-  const [clTotalIncome, setClTotalIncome] = useState("");
-  const [clTotalExpenses, setClTotalExpenses] = useState("");
-  const [clBalance, setClBalance] = useState("");
+  const [clLoan, setClLoan] = useState();
+  const [clEducation, setClEducation] = useState();
+  const [clRent, setClRent] = useState();
+  const [clMedical, setClMedical] = useState();
+  const [clOthers, setClOthers] = useState();
+  const [clTotal, setClTotal] = useState();
+  const [clTotalIncome, setClTotalIncome] = useState();
+  const [clTotalExpenses, setClTotalExpenses] = useState();
+  const [clBalance, setClBalance] = useState();
   const [isSaved, setIsSaved] = useState(false);
 
   //for alerts
@@ -38,7 +38,7 @@ const ClinetOtherExpDtls = () => {
     } catch (error) {
       console.log(error);
       setAlertMessage(
-        "Other Details not initialized.Do not proceed further. Please contact the developer"
+        "Guarantor Details not initialized.Do not proceed further. Please contact the developer"
       );
       setShowAlert(true);
     }
@@ -58,7 +58,7 @@ const ClinetOtherExpDtls = () => {
       Balance: clBalance,
       customerId: customerId,
     };
-    console.log(houseHoldId);
+    console.log(clientOtherDtls);
     try {
       const response = await axios.patch(
         `/api/v1/client/household/updateClientHouseHoldById/${houseHoldId}`,
@@ -68,7 +68,7 @@ const ClinetOtherExpDtls = () => {
       setIsSaved(true);
       await initialiseGuarantorDtls(customerId);
       setSuccessMessage(
-        "Client Bank Details Updated Successfully. Proceed Further."
+        "Client House Hold Details Updated Successfully. Proceed Further."
       );
       setShowSuccess(true);
     } catch (error) {
