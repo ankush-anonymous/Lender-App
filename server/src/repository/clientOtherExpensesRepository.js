@@ -44,6 +44,7 @@ export const createClientHouseHold = async (
 
     return result; // Return the ID of the inserted row
   } catch (error) {
+    console.log(error);
     throw new Error("Error creating client house hold details in the database");
   }
 };
@@ -80,51 +81,29 @@ export const getClientHouseHoldById = async (id) => {
   }
 };
 
-export const updateClientHouseHoldById = async (id, updatedFields) => {
-  const {
-    Loan,
-    Education,
-    Rent,
-    Medical,
-    Others,
-    Total,
-    TotalIncome,
-    TotalExpenses,
-    Balance,
-    customerId,
-  } = updatedFields;
+// Import necessary modules and configurations
 
-  const updateFields = {};
-  if (Loan !== undefined) updateFields.Loan = Loan;
-  if (Education !== undefined) updateFields.Education = Education;
-  if (Rent !== undefined) updateFields.Rent = Rent;
-  if (Medical !== undefined) updateFields.Medical = Medical;
-  if (Others !== undefined) updateFields.Others = Others;
-  if (Total !== undefined) updateFields.Total = Total;
-  if (TotalIncome !== undefined) updateFields.TotalIncome = TotalIncome;
-  if (TotalExpenses !== undefined) updateFields.TotalExpenses = TotalExpenses;
-  if (Balance !== undefined) updateFields.Balance = Balance;
-  if (customerId !== undefined) updateFields.customerId = customerId;
-
+export const updateClientHouseHoldDetailsById = async (id, updatedFields) => {
   try {
-    const fieldEntries = Object.entries(updateFields);
+    const fieldEntries = Object.entries(updatedFields);
     const fieldValues = fieldEntries.map(([key, value]) => value);
     fieldValues.push(id);
 
-    const updateQuery = `UPDATE clientHouseHoldDetails SET ${fieldEntries
+    const updateQuery = `UPDATE clienthouseholddetails SET ${fieldEntries
       .map(([key]) => `${key} = ?`)
       .join(", ")} WHERE id = ?`;
 
     const [result] = await pool.query(updateQuery, fieldValues);
 
     if (result.affectedRows === 0) {
-      return null; // If no client house hold details were updated, return null
+      return false; // Indicates that no rows were updated
     }
 
-    // If client house hold details were updated, fetch and return the updated details
-    const updatedClientHouseHold = await getClientHouseHoldById(id);
-    return updatedClientHouseHold;
+    // Return the updated details by calling the function to fetch details by id
+    const updatedDetails = await getClientHouseHoldById(id);
+    return updatedDetails;
   } catch (error) {
+    console.log(error);
     throw new Error("Error updating client house hold details in the database");
   }
 };

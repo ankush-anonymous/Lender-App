@@ -31,7 +31,7 @@ const LoginPage = () => {
       } else if (role === "Admin") {
         localStorage.setItem("Admin-authorized", "true");
       }
-      localStorage.setItem("id", SalesExecId);
+      localStorage.setItem("SalesExecId", SalesExecId);
       setAccess(role);
       setShowSuccess(true);
       setShowError(false);

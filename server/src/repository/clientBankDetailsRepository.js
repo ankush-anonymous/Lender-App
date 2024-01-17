@@ -1,5 +1,4 @@
 import pool from "../../db/connect.js";
-
 export const createClientBankDetails = async (
   id,
   clientID,
@@ -18,8 +17,16 @@ export const createClientBankDetails = async (
       BranchName,
       BankName,
     ]);
-    return result;
+
+    // Check if the insert was successful
+    if (result.affectedRows === 0) {
+      throw new Error("Error creating client bank details in the database");
+    }
+
+    // Return the id along with the result
+    return { result };
   } catch (error) {
+    console.log(error);
     throw new Error("Error creating client bank details in the database");
   }
 };
@@ -57,11 +64,13 @@ export const updateClientBankDetailsById = async (id, updatedFields) => {
       .map(([key]) => `${key} = ?`)
       .join(", ")} WHERE id = ?`;
     const [result] = await pool.query(updateQuery, fieldValues);
-    console.log(updateQuery);
+
     if (result.affectedRows === 0) {
       return false;
     }
-    const updatedClient = getClientBankDetailsById(id);
+
+    // Fetch the updated client details using the getClientBankDetailsById function
+    const updatedClient = await getClientBankDetailsById(id);
     return updatedClient;
   } catch (error) {
     console.log(error);

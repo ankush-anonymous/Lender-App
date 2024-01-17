@@ -15,7 +15,29 @@ const ClientBankDtls = ({ activeStep }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const clientId = localStorage.getItem("CustomerId");
+  const bankId = localStorage.getItem("BankDtlsId");
+  const customerId = localStorage.getItem("CustomerId");
+
+  const initialiseHouseholdDtls = async (customerId) => {
+    try {
+      const houseHoldDetails = {
+        customerId: customerId,
+      };
+      const response = await axios.post(
+        "/api/v1/client/household/createHouseHoldDtls",
+        houseHoldDetails
+      );
+      localStorage.setItem("HouseHoldId", response.data.id);
+      setSuccessMessage("Other Details Initialized");
+      setShowSuccess(true);
+    } catch (error) {
+      console.log(error);
+      setAlertMessage(
+        "Other Details not initialized.Do not proceed further. Please contact the developer"
+      );
+      setShowAlert(true);
+    }
+  };
 
   const handleSaveData = async () => {
     // Create an object to hold all the data
@@ -25,14 +47,39 @@ const ClientBankDtls = ({ activeStep }) => {
       BranchName: branchName,
       BankName: bankName,
     };
-
+    console.log(bankId);
     try {
       const response = await axios.patch(
-        `/api/v1/client/bankdetails/updateClientBankDetailsById/${clientId}`,
+        `/api/v1/client/bankdetails/updateClientBankDetailsById/${bankId}`,
         clientBankDtls
       );
       console.log(response.data);
-      localStorage.setItem("BankID: ", response.data.id);
+      setIsSaved(true);
+      await initialiseHouseholdDtls(customerId);
+      setSuccessMessage(
+        "Client Bank Details Updated Successfully. Proceed Further."
+      );
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const handleUpdateData = async () => {
+    // Create an object to hold all the data
+    const clientBankDtls = {
+      AccountNo: accountNo,
+      IFSC: ifsc,
+      BranchName: branchName,
+      BankName: bankName,
+    };
+    console.log(bankId);
+    try {
+      const response = await axios.patch(
+        `/api/v1/client/bankdetails/updateClientBankDetailsById/${bankId}`,
+        clientBankDtls
+      );
+      console.log(response.data);
       setIsSaved(true);
       setSuccessMessage(
         "Client Bank Details Updated Successfully. Proceed Further."
@@ -160,7 +207,7 @@ const ClientBankDtls = ({ activeStep }) => {
             Save Data
           </Button>
         ) : (
-          <Button variant="outlined" onClick={handleSaveData}>
+          <Button variant="outlined" onClick={handleUpdateData}>
             Update Data
           </Button>
         )}

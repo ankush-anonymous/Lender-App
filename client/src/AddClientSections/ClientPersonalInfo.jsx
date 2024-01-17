@@ -83,7 +83,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
         "/api/v1/client/bankdetails/createClientBankDetails",
         bankDetails
       );
-      localStorage.setItem("BankDtlsId: ", response.data.id);
+      localStorage.setItem("BankDtlsId", response.data.id);
       setSuccessMessage("Bank Details Initialized");
       setShowSuccess(true);
     } catch (error) {

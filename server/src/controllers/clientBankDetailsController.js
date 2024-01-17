@@ -19,6 +19,7 @@ export const createClientBankDetails = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       message: "Client bank details created successfully",
       result,
+      id,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

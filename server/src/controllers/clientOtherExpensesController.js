@@ -36,6 +36,7 @@ export const createClientHouseHold = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       message: "Client house hold details created successfully",
       result,
+      id,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -104,7 +105,7 @@ export const updateClientHouseHoldById = async (req, res) => {
     }
 
     const updatedClientHouseHold =
-      await clientOtherExpensesRepository.updateClientHouseHoldById(
+      await clientOtherExpensesRepository.updateClientHouseHoldDetailsById(
         id,
         updatedFields
       );
