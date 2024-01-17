@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Alert } from "@mui/material";
 import axios from "axios";
 
@@ -14,6 +14,8 @@ const ClientBankDtls = ({ activeStep }) => {
   const [alertMessage, setAlertMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isExists, setIsExists] = useState(false);
+  const [dataExists, setDataExists] = useState({});
 
   const bankId = localStorage.getItem("BankDtlsId");
   const customerId = localStorage.getItem("CustomerId");
@@ -89,6 +91,31 @@ const ClientBankDtls = ({ activeStep }) => {
       console.error(error.response.data);
     }
   };
+
+  const setFormData = async (bankId) => {
+    try {
+      const response = await axios.get(
+        `api/v1/client/bankdetails/getClientBankDetailsById/${bankId}`
+      );
+      const dataExists = response.data.result;
+
+      setAccountNo(dataExists.AccountNo || "");
+      setIfsc(dataExists.IFSC || "");
+      setBranchName(dataExists.BranchName || "");
+      setBankName(dataExists.BankName || "");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const bankId = localStorage.getItem("BankDtlsId");
+    if (bankId) {
+      setIsExists(true);
+      setIsSaved(true);
+      setFormData(bankId);
+    }
+  }, []);
 
   return (
     <>
