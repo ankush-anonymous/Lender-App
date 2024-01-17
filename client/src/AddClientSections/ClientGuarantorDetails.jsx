@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -24,6 +24,8 @@ const ClientGuarantorDetails = () => {
   const [grIsOwned, setGrIsOwned] = useState(false);
   const [grIsRented, setGrIsRented] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isExists, setIsExists] = useState(false);
+  const [dataExists, setDataExists] = useState({});
 
   //for alerts
   const [showAlert, setShowAlert] = useState(false);
@@ -125,6 +127,39 @@ const ClientGuarantorDetails = () => {
       console.error("Error updating client guarantor details:", error);
     }
   };
+
+  const setFormData = async (guarantorId) => {
+    try {
+      const response = await axios.get(
+        `api/v1/client/guarantor/getClientGuarantorById/${guarantorId}`
+      );
+      const dataExists = response.data.result;
+
+      setGuarantorName(dataExists.GuarantorName || "");
+      setGrSpouseName(dataExists.SpouseName || "");
+      setGrFatherName(dataExists.FatherName || "");
+      setGrMotherName(dataExists.MotherName || "");
+      setGrRelation(dataExists.Relation || "");
+      setGrDateOfBirth(dataExists.DateOfBirth || "");
+      setGrAge(dataExists.Age || "");
+      setGrMobileNo1(dataExists.GrMobileNo1 || "");
+      setGrMobileNo2(dataExists.GrMobileNo2 || "");
+      setGrAddress(dataExists.GrAddress || "");
+      setGrIsRented(dataExists.GrIsRented || "");
+      setGrIsOwned(dataExists.GrIsOwned || "");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const guarantorId = localStorage.getItem("GuarantorId");
+    if (guarantorId) {
+      setIsExists(true);
+      setIsSaved(true);
+      setFormData(guarantorId);
+    }
+  }, []);
 
   return (
     <>
