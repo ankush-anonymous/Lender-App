@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Grid, Alert, Button } from "@mui/material";
 import axios from "axios";
 
@@ -16,6 +16,8 @@ const ClientVerificationDtls = () => {
   const [grOthers1, setGrOthers1] = useState("");
   const [grOthers2, setGrOthers2] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [isExists, setIsExists] = useState(false);
+  const [dataExists, setDataExists] = useState({});
 
   //for alerts
   const [showAlert, setShowAlert] = useState(false);
@@ -84,13 +86,46 @@ const ClientVerificationDtls = () => {
       );
       setIsSaved(true);
       setSuccessMessage(
-        "Client Verification Details Updated Successfully. Proceed Further."
+        "Client Verification Details Updated Successfully. Client Data Received."
       );
       setShowSuccess(true);
     } catch (error) {
       console.error(error.response.data);
     }
   };
+
+  const setFormData = async (verificationId) => {
+    try {
+      const response = await axios.get(
+        `api/v1/client/verification/getVerificationById/${verificationId}`
+      );
+      const dataExists = response.data.clientVerification;
+
+      setClSmartCard(dataExists.ClSmartCard || "");
+      setClAadharCard(dataExists.ClAadharCard || "");
+      setClVoterId(dataExists.ClVoterId || "");
+      setClPanCard(dataExists.ClPanCard || "");
+      setClOthers1(dataExists.ClOthers1 || "");
+      setClOthers2(dataExists.ClOthers2 || "");
+      setGrSmartCard(dataExists.GrSmartCard || "");
+      setGrAadharCard(dataExists.GrAadharCard || "");
+      setGrVoterId(dataExists.GrVoterId || "");
+      setGrPanCard(dataExists.GrPanCard || "");
+      setGrOthers1(dataExists.GrOthers1 || "");
+      setGrOthers2(dataExists.GrOthers2 || "");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const verificationId = localStorage.getItem("VerificationId");
+    if (verificationId) {
+      setIsExists(true);
+      setIsSaved(true);
+      setFormData(verificationId);
+    }
+  }, []);
 
   return (
     <>
