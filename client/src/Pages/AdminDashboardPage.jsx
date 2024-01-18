@@ -218,7 +218,7 @@ const AdminDashboard = () => {
                     Sales Executives
                   </Typography>
                 </Box>
-                <SalesExeTableComponent />
+                <Box></Box>
                 <Box
                   sx={{
                     display: "flex",

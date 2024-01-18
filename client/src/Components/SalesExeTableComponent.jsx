@@ -22,18 +22,6 @@ const columns = [
   },
 ];
 
-function createData(slno, name, amountFloated) {
-  return { slno, name, amountFloated };
-}
-
-const rows = [
-  createData(1, "Frozen yoghurt", 3.99),
-  createData(2, "Ice cream sandwich", 4.99),
-  createData(3, "Eclair", 3.79),
-  createData(4, "Cupcake", 2.5),
-  createData(5, "Gingerbread", 1.5),
-];
-
 export default function SalesExeTableComponent() {
   const [fetchedRows, setFetchedRows] = React.useState([]);
   const [page, setPage] = React.useState(0);

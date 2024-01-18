@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "../Components/AdminNavbar";
+import Select from "react-select";
 import {
   Box,
   Grid,
@@ -50,21 +51,56 @@ const CenterReportPage = () => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedSalesExecRow, setSelectedSalesExecRow] = useState(null);
 
+  const [salesExecDtlRows, setSalesExecDtlRows] = useState([]);
+  const [clientDtlRows, setClientDtlRows] = useState([]);
+
+  //to save salesExecDtls to create new emp
+  const [salesExecName, setSalesExecName] = useState("");
+  const [salesExecContact, setSalesExecContact] = useState("");
+  const [salesExecEmail, setSalesExecEmail] = useState("");
+  const [salesExecAdd, setSalesExecAdd] = useState("");
+  const [salesExecCenter, setSalesExecCenter] = useState("");
+
+  //to create new center
   const [centerName, setCenterName] = useState("");
   const [centerCode, setCenterCode] = useState("");
   const [centerIncharge, setCenterIncharge] = useState("");
 
+  //for center selection
+  const [selectedCenter, setSelectedCenter] = useState(null);
+  const [listOfCenters, setListOfCenters] = useState([]);
+  const CenterOptions = listOfCenters.map((center) => ({
+    value: center.id,
+    label: center.centerName, // Adjust this based on your data structure
+  }));
+  const handleCenterSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setCenterCode(selectedOption.value);
+    setSelectedCenter(selectedOption);
+    setSalesExecCenter(selectedOption.value);
+  };
+
+  //to handle center radio change
   const handleCenterRadioChange = (event, value, row) => {
     setSelectedValue(value);
     setSelectedSalesExecRow(row);
+    fetchSalesExecOnCenterSelect(row.id);
+
+    console.log(row.id);
   };
+
+  //handle sales exec radio change
   const handleSalesExecRadioChange = (event, value, row) => {
     setSelectedValue(value);
     setSelectedSalesExecRow(row);
+    fetchClientLoanDtls(row.id);
   };
+
   const [addCenterDialogue, setAddCenterDialogue] = useState(false);
   const [addSalesExecDialogue, setAddSalesExecDialogue] = useState(false);
   const [knowClientDtlsDialogue, setKnowClientDtlsDialogue] = useState(false);
+
+  const [centerDtlRows, setCenterDtlRows] = useState([]);
 
   const handleKnowClientDtlsDialogueClose = () => {
     setKnowClientDtlsDialogue(false);
@@ -95,92 +131,123 @@ const CenterReportPage = () => {
     return { backgroundColor, color: textColor };
   };
 
-  const SalesExecDtlRows = [
-    {
-      salesExecId: "qwert1234",
-      Name: "Muthukumaran S",
-      Contact: "1234567891",
-      amount: 50000,
-    },
-    {
-      salesExecId: "qwert1235",
-      Name: "test2",
-      Contact: "1234567892",
-      amount: 50000,
-    },
-    // Add more centerDtlRows as needed
-  ];
-  const centerDtlRows = [
-    {
-      slno: 1,
-      centerId: "C001",
-      centerName: "Center A",
-      IFSCcode: "XYZ123",
-      amount: 50000,
-    },
-    {
-      slno: 2,
-      centerId: "C002",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 3,
-      centerId: "C003",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 4,
-      centerId: "C004",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 5,
-      centerId: "C005",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    // Add more centerDtlRows as needed
-  ];
+  const fetchClientLoanDtls = async (salesExecId) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/cashflow/getAllcashFlow?SalesExecID=${salesExecId}`
+      );
 
-  const clientDtlRows = [
-    {
-      ID: "1",
-      SalesExecID: "SE001",
-      dateOfLoan: "2022-01-01",
-      DayOfCollection: "2022-01-15",
-      CenterID: "C001",
-      CustomerID: "Cust001",
-      LoanAmount: 5000.0,
-      Interest: 5.0,
-      CurrentPayCount: 2,
-      PayCount: 12,
-      PrincipalAmount: 3000.0,
-      Status: "Active",
-    },
-    {
-      ID: "2",
-      SalesExecID: "SE002",
-      dateOfLoan: "2022-02-01",
-      DayOfCollection: "2022-02-15",
-      CenterID: "C002",
-      CustomerID: "Cust002",
-      LoanAmount: 8000.0,
-      Interest: 8.0,
-      CurrentPayCount: 4,
-      PayCount: 10,
-      PrincipalAmount: 6000.0,
-      Status: "Inactive",
-    },
-    // Add more objects as needed
-  ];
+      const entries = response.data.entries;
 
+      const clientDetailsPromises = entries.map(async (entry) => {
+        const clientDetails = await fetchClientDetails(entry.CustomerID, entry);
+        return { ...entry, clientName: clientDetails.clientName };
+      });
+      const updatedEntries = await Promise.all(clientDetailsPromises);
+
+      setClientDtlRows(updatedEntries);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchClientDetails = async (clientId, row) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/client/getClientPersonalDetailsById/${clientId}`
+      );
+      const clientName = response.data.clientPersonal.CustomerName;
+      return { ...row, clientName };
+    } catch (error) {
+      console.log(error);
+      return row; // Return the original row in case of an error
+    }
+  };
+
+  //to fetch CenterDtls
+  const fetchCenterRows = async () => {
+    const response = await axios.get("/api/v1/center/getAllCenterDetails");
+
+    console.log(response.data.centers);
+    setCenterDtlRows(response.data.centers);
+    setListOfCenters(response.data.centers);
+  };
+
+  const fetchSalesExecOnCenterSelect = async (centerId) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/employee/getAllEmployees?centerId=${centerId}`
+      );
+      console.log(response.data.employees);
+      setSalesExecDtlRows(response.data.employees);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const clientDtlRows = [
+  //   {
+  //     ID: "1",
+  //     SalesExecID: "SE001",
+  //     dateOfLoan: "2022-01-01",
+  //     DayOfCollection: "2022-01-15",
+  //     CenterID: "C001",
+  //     CustomerID: "Cust001",
+  //     LoanAmount: 5000.0,
+  //     Interest: 5.0,
+  //     CurrentPayCount: 2,
+  //     PayCount: 12,
+  //     PrincipalAmount: 3000.0,
+  //     Status: "Active",
+  //   },
+  //   {
+  //     ID: "2",
+  //     SalesExecID: "SE002",
+  //     dateOfLoan: "2022-02-01",
+  //     DayOfCollection: "2022-02-15",
+  //     CenterID: "C002",
+  //     CustomerID: "Cust002",
+  //     LoanAmount: 8000.0,
+  //     Interest: 8.0,
+  //     CurrentPayCount: 4,
+  //     PayCount: 10,
+  //     PrincipalAmount: 6000.0,
+  //     Status: "Inactive",
+  //   },
+  //   // Add more objects as needed
+  // ];
+
+  //to create salesExec
+  const handleSaveSalesExec = async () => {
+    const SalesExecDtls = {
+      name: salesExecName,
+      phoneNumber: salesExecContact,
+      email: salesExecEmail,
+      address: salesExecAdd,
+      Role: "SalesExec",
+      password: salesExecContact,
+      centerId: salesExecCenter,
+    };
+    console.log(SalesExecDtls);
+    try {
+      const response = await axios.post(
+        "/api/v1/employee/register",
+        SalesExecDtls
+      );
+      if (response.status === 201) {
+        console.log("Sales Executive added");
+        setAddSalesExecDialogue(false);
+      } else {
+        console.log("not done");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCenterRows();
+  }, []);
   return (
     <>
       <AdminNavbar />
@@ -230,7 +297,7 @@ const CenterReportPage = () => {
                               Slno
                             </TableCell>
                             <TableCell style={{ color: "white" }}>
-                              CenterId
+                              Center Code
                             </TableCell>
                             <TableCell style={{ color: "white" }}>
                               CenterName
@@ -258,24 +325,24 @@ const CenterReportPage = () => {
                                 key={row.slno}
                                 sx={alternateRowColor(index)} // Apply styles here
                               >
-                                <TableCell>{row.slno}</TableCell>
-                                <TableCell>{row.centerId}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{row.centerCode}</TableCell>
                                 <TableCell>{row.centerName}</TableCell>
-                                <TableCell>{row.IFSCcode}</TableCell>
-                                <TableCell>{row.amount}</TableCell>
+                                <TableCell>{row.IFSC}</TableCell>
+                                <TableCell>{row.TotalAmount}</TableCell>
                                 <TableCell>
                                   <RadioGroup
                                     value={selectedValue} // Add state to manage the selected radio button
                                     onChange={(event) =>
                                       handleCenterRadioChange(
                                         event,
-                                        row.centerId,
+                                        row.centerCode,
                                         row
                                       )
                                     }
                                   >
                                     <FormControlLabel
-                                      value={row.centerId}
+                                      value={row.centerCode}
                                       control={<Radio />}
                                       label=""
                                     />
@@ -447,37 +514,40 @@ const CenterReportPage = () => {
                         </TableHead>
 
                         <TableBody>
-                          {SalesExecDtlRows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          ).map((row, index) => (
-                            <TableRow
-                              key={row.salesExecId} // Use salesExecId as the key
-                              sx={alternateRowColor(index)} // Apply styles here
-                            >
-                              <TableCell>
-                                <RadioGroup
-                                  value={selectedValue}
-                                  onChange={(event) =>
-                                    handleSalesExecRadioChange(
-                                      event,
-                                      row.salesExecId,
-                                      row
-                                    )
-                                  }
-                                >
-                                  <FormControlLabel
-                                    value={row.salesExecId}
-                                    control={<Radio />}
-                                    label=""
-                                  />
-                                </RadioGroup>
-                              </TableCell>
-                              <TableCell>{row.Name}</TableCell>
-                              <TableCell>{row.Contact}</TableCell>
-                              <TableCell>{row.amount}</TableCell>
-                            </TableRow>
-                          ))}
+                          {salesExecDtlRows
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                            .map((row, index) => (
+                              <TableRow
+                                key={row.id} // Use salesExecId as the key
+                                sx={alternateRowColor(index)} // Apply styles here
+                              >
+                                <TableCell>
+                                  <RadioGroup
+                                    value={selectedValue}
+                                    onChange={(event) =>
+                                      handleSalesExecRadioChange(
+                                        event,
+                                        row.id,
+                                        row
+                                      )
+                                    }
+                                    name="salesExecRadioGroup" // Add a common name for all radio buttons
+                                  >
+                                    <FormControlLabel
+                                      value={row.id}
+                                      control={<Radio />}
+                                      label=""
+                                    />
+                                  </RadioGroup>
+                                </TableCell>
+                                <TableCell>{row.Name}</TableCell>
+                                <TableCell>{row.Phone}</TableCell>
+                                <TableCell>{row.AmountLended}</TableCell>
+                              </TableRow>
+                            ))}
                         </TableBody>
                       </Table>
                       <TablePagination
@@ -566,9 +636,11 @@ const CenterReportPage = () => {
                                 sx={alternateRowColor(index)} // Apply styles here
                               >
                                 <TableCell>{index + 1}</TableCell>
-                                <TableCell>{row.CustomerName}</TableCell>
-                                <TableCell>{row.dateOfLoan}</TableCell>
-                                <TableCell>{row.amount}</TableCell>
+                                <TableCell>{row.clientName}</TableCell>
+                                <TableCell>
+                                  {row.dateOfLoan.slice(0, 10)}
+                                </TableCell>
+                                <TableCell>{row.LoanAmount}</TableCell>
                                 <TableCell>{row.Status}</TableCell>
                               </TableRow>
                             ))}
@@ -631,7 +703,7 @@ const CenterReportPage = () => {
               fullWidth
             />
             <TextField
-              label="Center Code*"
+              label="Center Code* [eg. ABC123]"
               value={centerCode}
               onChange={(e) => setCenterCode(e.target.value)}
               fullWidth
@@ -689,28 +761,57 @@ const CenterReportPage = () => {
           >
             <TextField
               label="Sales Executive Name*"
-              value={centerName}
-              onChange={(e) => setCenterName(e.target.value)}
+              value={salesExecName}
+              onChange={(e) => setSalesExecName(e.target.value)}
               fullWidth
             />
-            <TextField
-              label="Center Name*"
-              value={centerCode}
-              onChange={(e) => setCenterCode(e.target.value)}
-              fullWidth
-            />
+
             <TextField
               label="Contact No."
-              value={centerIncharge}
-              onChange={(e) => setCenterIncharge(e.target.value)}
+              value={salesExecContact}
+              onChange={(e) => setSalesExecContact(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Email Address"
+              value={salesExecEmail}
+              onChange={(e) => setSalesExecEmail(e.target.value)}
               fullWidth
             />
             <TextField
               label="Address"
-              value={centerIncharge}
-              onChange={(e) => setCenterIncharge(e.target.value)}
+              value={salesExecAdd}
+              onChange={(e) => setSalesExecAdd(e.target.value)}
               fullWidth
             />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                borderRadius: "10px",
+                marginTop: "10px",
+              }}
+            >
+              <Select
+                styles={{
+                  control: (baseStyles) => ({
+                    ...baseStyles,
+                    width: "250px",
+                    height: "50px",
+                    zIndex: "0",
+                  }),
+                  provided: (baseStyles) => ({
+                    ...baseStyles,
+                    zIndex: "9999 !important",
+                  }),
+                }}
+                value={selectedCenter} // Ensure 'value' is being set correctly
+                onChange={handleCenterSelect}
+                options={CenterOptions}
+                placeholder="Select Center"
+              />
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -721,7 +822,7 @@ const CenterReportPage = () => {
             Cancel
           </Button>
           <Button
-            // onClick={handleSaveUser}
+            onClick={handleSaveSalesExec}
             // color="white"
             sx={{
               color: "white",
