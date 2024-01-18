@@ -5,16 +5,18 @@ export const createCenterEntry = async (
   centerCode,
   centerName,
   IFSC,
-  TotalAmount
+  TotalAmount,
+  centerIncharge
 ) => {
   try {
-    const sql = `INSERT INTO centerDetails (id, centerCode, centerName, IFSC, TotalAmount) VALUES (?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO centerDetails (id, centerCode, centerName, IFSC, TotalAmount,centerIncharge) VALUES (?, ?, ?, ?, ?,?)`;
     const [result] = await pool.query(sql, [
       id,
       centerCode,
       centerName,
       IFSC,
       TotalAmount,
+      centerIncharge,
     ]);
     return result;
   } catch (error) {

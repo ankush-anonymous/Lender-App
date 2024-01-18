@@ -7,6 +7,7 @@ export const createClientVerification = async (req, res) => {
     const {
       GrSmartCard,
       GrAadharCard,
+      GrPanCard,
       GrVoterId,
       GrOthers1,
       GrOthers2,
@@ -25,6 +26,7 @@ export const createClientVerification = async (req, res) => {
       id,
       GrSmartCard,
       GrAadharCard,
+      GrPanCard,
       GrVoterId,
       GrOthers1,
       GrOthers2,
@@ -40,6 +42,7 @@ export const createClientVerification = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       message: "Client verification details created successfully",
       result,
+      id,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -94,7 +97,6 @@ export const updateClientVerificationById = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedFields = req.body;
-
     const updatedClientVerification =
       await clientVerificationRepository.updateClientVerificationById(
         id,

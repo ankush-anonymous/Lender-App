@@ -4,6 +4,7 @@ export const createClientVerification = async (
   id,
   GrSmartCard,
   GrAadharCard,
+  GrPanCard,
   GrVoterId,
   GrOthers1,
   GrOthers2,
@@ -17,14 +18,15 @@ export const createClientVerification = async (
 ) => {
   try {
     const sql = `INSERT INTO clientVerificationId (
-      id, GrSmartCard, GrAadharCard, GrVoterId, GrOthers1, GrOthers2,
+      id, GrSmartCard, GrAadharCard, GrPanCard,GrVoterId, GrOthers1, GrOthers2,
       ClSmartCard, ClAadharCard, ClVoterId, ClPanCard, ClOthers1, ClOthers2, customerId
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
     const [result] = await pool.query(sql, [
       id,
       GrSmartCard,
       GrAadharCard,
+      GrPanCard,
       GrVoterId,
       GrOthers1,
       GrOthers2,
@@ -60,7 +62,7 @@ export const getAllClientVerifications = async () => {
 
 export const getClientVerificationById = async (id) => {
   try {
-    const sql = "SELECT * FROM clientVerificationId WHERE id = ?";
+    const sql = "SELECT * FROM clientverificationid WHERE id = ?";
     const [rows] = await pool.query(sql, [id]);
 
     if (rows.length === 0) {
@@ -71,6 +73,7 @@ export const getClientVerificationById = async (id) => {
 
     return clientVerification; // Return the client verification details
   } catch (error) {
+    console.log(error);
     throw new Error(
       "Error retrieving client verification details from the database"
     );
@@ -85,7 +88,7 @@ export const updateClientVerificationById = async (id, updatedFields) => {
     const fieldValues = fieldEntries.map(([key, value]) => value);
     fieldValues.push(id);
 
-    const updateQuery = `UPDATE clientVerificationId SET ${fieldEntries
+    const updateQuery = `UPDATE clientverificationid SET ${fieldEntries
       .map(([key]) => `${key} = ?`)
       .join(", ")} WHERE id = ?`;
 
@@ -94,10 +97,12 @@ export const updateClientVerificationById = async (id, updatedFields) => {
     if (result.affectedRows === 0) {
       return null; // If no row was updated, return null
     }
-
     const updatedClientVerification = await getClientVerificationById(id);
+    console.log(result);
+
     return updatedClientVerification; // Return the updated client verification details
   } catch (error) {
+    console.log(error);
     throw new Error(
       "Error updating client verification details in the database"
     );
@@ -106,7 +111,7 @@ export const updateClientVerificationById = async (id, updatedFields) => {
 
 export const deleteClientVerificationById = async (id) => {
   try {
-    const sql = "DELETE FROM clientVerificationId WHERE id = ?";
+    const sql = "DELETE FROM clientverificationid WHERE id = ?";
     const [result] = await pool.query(sql, [id]);
 
     if (result.affectedRows === 0) {

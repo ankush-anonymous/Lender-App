@@ -59,7 +59,8 @@ export const createEmployee = async (
   address,
   govtId,
   role,
-  password
+  password,
+  centerId
 ) => {
   try {
     // Hash password
@@ -67,7 +68,7 @@ export const createEmployee = async (
     const hashedPassword = await bcryptjs.hash(password, salt);
 
     const [result] = await pool.query(
-      "INSERT INTO empDetails (id, Name, Phone, EmailAddr, Photo, Address, GovtID, Role, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO empDetails (id, Name, Phone, EmailAddr, Photo, Address, GovtID, Role, password,centerId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
       [
         generatedId,
         name,
@@ -78,6 +79,7 @@ export const createEmployee = async (
         govtId,
         role,
         hashedPassword,
+        centerId,
       ]
     );
 
@@ -92,6 +94,7 @@ export const createEmployee = async (
         userPhoto: photo,
         userAddress: address,
         userId: govtId,
+        centerId: centerId,
       },
       secretKey,
       {
@@ -105,7 +108,12 @@ export const createEmployee = async (
   }
 };
 
-export const getAllEmployees = async ({ phoneNumber, EmailAddr, Role }) => {
+export const getAllEmployees = async ({
+  phoneNumber,
+  EmailAddr,
+  Role,
+  centerId,
+}) => {
   try {
     let query = "SELECT * FROM empDetails WHERE 1"; // Initial query
 
@@ -124,6 +132,10 @@ export const getAllEmployees = async ({ phoneNumber, EmailAddr, Role }) => {
     if (Role) {
       query += " AND Role = ?"; // Add condition for Role
       queryParams.push(Role);
+    }
+    if (centerId) {
+      query += " AND centerId = ?"; // Add condition for Role
+      queryParams.push(centerId);
     }
 
     const [rows, fields] = await pool.query(query, queryParams);

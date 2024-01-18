@@ -21,7 +21,6 @@ export const createClientGuarantorDetails = async (req, res) => {
     } = req.body;
 
     const guarantorId = nanoid(10); // Generating a 10-character ID using nanoid
-
     const result = await clientGuarantorRepository.createClientGuarantorDetails(
       guarantorId,
       customerId,

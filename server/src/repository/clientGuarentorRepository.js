@@ -18,7 +18,7 @@ export const createClientGuarantorDetails = async (
 ) => {
   try {
     const sql = `INSERT INTO ClientGuarantorDetails (
-      GuarentorID, CutomerID, GuarantorName, SpouseName, FatherName, MotherName,
+      GuarentorID, CustomerID, GuarantorName, SpouseName, FatherName, MotherName,
       Relation, DateOfBirth, Age, GrMobileNo1, GrMobileNo2, GrAddress,
       GrIsOwned, GrIsRented
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -80,27 +80,22 @@ export const getClientGuarantorById = async (guarantorId) => {
 
 //Need to work on
 export const updateClientGuarantorById = async (guarantorId, updatedFields) => {
-  const updateFields = { ...updatedFields };
-
   try {
-    const fieldEntries = Object.entries(updateFields);
+    const fieldEntries = Object.entries(updatedFields);
     const fieldValues = fieldEntries.map(([key, value]) => value);
     fieldValues.push(guarantorId);
 
-    const updateQuery = `UPDATE ClientGuarantorDetails SET ${fieldEntries
+    const updateQuery = `UPDATE clientguarantordetails SET ${fieldEntries
       .map(([key]) => `${key} = ?`)
       .join(", ")} WHERE GuarentorID = ?`;
-    console.log(fieldValues);
+
     const [result] = await pool.query(updateQuery, fieldValues);
-    console.log(result);
 
-    if (result.affectedRows === 0) {
-      return false; // If no row was updated, return false
-    }
-
-    return true; // Return true indicating successful update
+    return result.affectedRows > 0;
   } catch (error) {
-    throw new Error("Error updating client guarantor details in the database");
+    console.log(error);
+    console.error("Error updating client guarantor details:", error);
+    throw error;
   }
 };
 

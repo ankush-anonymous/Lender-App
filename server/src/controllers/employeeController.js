@@ -37,8 +37,17 @@ export const registerEmployee = async (req, res) => {
   try {
     const generatedId = generateUniqueIdentifier();
 
-    const { name, phoneNumber, email, photo, address, govtId, Role, password } =
-      req.body;
+    const {
+      name,
+      phoneNumber,
+      email,
+      photo,
+      address,
+      govtId,
+      Role,
+      password,
+      centerId,
+    } = req.body;
 
     const { generatedId: customerId, token } =
       await employeeRepository.createEmployee(
@@ -50,13 +59,14 @@ export const registerEmployee = async (req, res) => {
         address,
         govtId,
         Role,
-        password
+        password,
+        centerId
       );
 
     const responseMessage = `Data inserted: success. Employee ID: ${customerId}`;
 
     res
-      .status(StatusCodes.OK)
+      .status(StatusCodes.CREATED)
       .json({ message: responseMessage, generatedId: customerId, token });
   } catch (error) {
     res
@@ -67,12 +77,13 @@ export const registerEmployee = async (req, res) => {
 
 export const getAllEmployees = async (req, res) => {
   try {
-    const { phoneNumber, EmailAddr, Role } = req.query; // Extract query parameters
+    const { phoneNumber, EmailAddr, Role, centerId } = req.query; // Extract query parameters
 
     const { employees, count } = await employeeRepository.getAllEmployees({
       phoneNumber,
       EmailAddr,
       Role,
+      centerId,
     });
 
     const responseMessage = `Retrieved ${count} employees`;

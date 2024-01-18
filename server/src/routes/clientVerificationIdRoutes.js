@@ -18,7 +18,7 @@ router.get(
   clientVerificationIdController.getClientVerificationById
 );
 router.patch(
-  "/updateVerification",
+  "/updateVerification/:id",
   clientVerificationIdController.updateClientVerificationById
 );
 router.delete(

@@ -11,7 +11,7 @@ router.get(
 );
 router.get(
   "/getClientGuarantorById/:guarantorId",
-  clientGuarentorController.getAllClientGuarantorDetails
+  clientGuarentorController.getClientGuarantorById
 );
 router.post(
   "/createClientGuarantorDetails",

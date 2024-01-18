@@ -52,7 +52,7 @@ export const getClientBankDetailsById = async (req, res) => {
         .json({ message: "Client bank details not found" });
     }
 
-    res.status(StatusCodes.OK).json(result);
+    res.status(StatusCodes.OK).json({ result: result });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: "Error retrieving client bank details",

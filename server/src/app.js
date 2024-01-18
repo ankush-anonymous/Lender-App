@@ -19,6 +19,7 @@ import ClientOtherExpensesRouter from "./routes/clientOtherExpensesRoutes.js";
 import ClientVerificationIdRouter from "./routes/clientVerificationIdRoutes.js";
 import CashFlowRouter from "./routes/cashFlowRoutes.js";
 import centerDetailsRouter from "./routes/centerDetailsRoutes.js";
+import transactionLogsRouter from "./routes/transactionLogsRoutes.js";
 
 app.use(express.json());
 app.use(cors());
@@ -33,6 +34,7 @@ app.use("/api/v1/client/household", ClientOtherExpensesRouter);
 app.use("/api/v1/client/verification", ClientVerificationIdRouter);
 app.use("/api/v1/cashFlow", CashFlowRouter);
 app.use("/api/v1/center", centerDetailsRouter);
+app.use("/api/v1/transaction", transactionLogsRouter);
 
 const port = process.env.PORT || 5000;
 

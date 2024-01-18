@@ -9,7 +9,8 @@ const generateUniqueIdentifier = () => {
 
 export const createCenterEntry = async (req, res) => {
   try {
-    const { centerCode, centerName, IFSC, TotalAmount } = req.body;
+    const { centerCode, centerName, IFSC, TotalAmount, centerIncharge } =
+      req.body;
     const id = generateUniqueIdentifier();
 
     const result = await centerDetailsRepository.createCenterEntry(
@@ -17,12 +18,14 @@ export const createCenterEntry = async (req, res) => {
       centerCode,
       centerName,
       IFSC,
-      TotalAmount
+      TotalAmount,
+      centerIncharge
     );
 
     res.status(StatusCodes.CREATED).json({
       message: "Center entry created successfully",
       result,
+      id,
     });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
