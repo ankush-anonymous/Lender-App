@@ -27,6 +27,7 @@ const ClientVerificationDtls = () => {
 
   const verificationId = localStorage.getItem("VerificationId");
   const customerId = localStorage.getItem("CustomerId");
+  const flag = localStorage.getItem("flag");
 
   const handleSaveData = async () => {
     // Create an object to hold all the data
@@ -51,9 +52,10 @@ const ClientVerificationDtls = () => {
         `/api/v1/client/verification/updateVerification/${verificationId}`,
         clientVerificationDtls
       );
+      localStorage.setItem("flag", 6);
       setIsSaved(true);
       setSuccessMessage(
-        "Client Verification Details Updated Successfully. Proceed Further."
+        "Client Verification Details Updated Successfully. All Details Saved Successfully."
       );
       setShowSuccess(true);
     } catch (error) {
@@ -120,7 +122,7 @@ const ClientVerificationDtls = () => {
 
   useEffect(() => {
     const verificationId = localStorage.getItem("VerificationId");
-    if (verificationId) {
+    if (verificationId && flag >= 6) {
       setIsExists(true);
       setIsSaved(true);
       setFormData(verificationId);

@@ -19,6 +19,7 @@ const ClientBankDtls = ({ activeStep }) => {
 
   const bankId = localStorage.getItem("BankDtlsId");
   const customerId = localStorage.getItem("CustomerId");
+  const flag = localStorage.getItem("flag");
 
   const initialiseHouseholdDtls = async (customerId) => {
     try {
@@ -56,6 +57,7 @@ const ClientBankDtls = ({ activeStep }) => {
         clientBankDtls
       );
       console.log(response.data);
+      localStorage.setItem("flag", 3);
       setIsSaved(true);
       await initialiseHouseholdDtls(customerId);
       setSuccessMessage(
@@ -110,9 +112,8 @@ const ClientBankDtls = ({ activeStep }) => {
 
   useEffect(() => {
     const bankId = localStorage.getItem("BankDtlsId");
-    if (bankId) {
+    if (bankId && flag >= 3) {
       setIsExists(true);
-      setIsSaved(true);
       setFormData(bankId);
     }
   }, []);

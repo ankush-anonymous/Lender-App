@@ -35,6 +35,7 @@ const ClientGuarantorDetails = () => {
 
   const guarantorId = localStorage.getItem("GuarantorId");
   const customerId = localStorage.getItem("CustomerId");
+  const flag = localStorage.getItem("flag");
 
   const initialiseVerificationDtls = async (customerId) => {
     try {
@@ -79,9 +80,10 @@ const ClientGuarantorDetails = () => {
         `/api/v1/client/guarantor/updateClientGuarantorById/${guarantorId}`,
         clientGuarantorDtls
       );
-
+      localStorage.setItem("flag", 5);
       initialiseVerificationDtls(customerId);
       setIsSaved(true);
+
       setSuccessMessage(
         "Client Guarantor Details Updated Successfully. Proceed Further."
       );
@@ -154,7 +156,7 @@ const ClientGuarantorDetails = () => {
 
   useEffect(() => {
     const guarantorId = localStorage.getItem("GuarantorId");
-    if (guarantorId) {
+    if (guarantorId && flag >= 5) {
       setIsExists(true);
       setIsSaved(true);
       setFormData(guarantorId);

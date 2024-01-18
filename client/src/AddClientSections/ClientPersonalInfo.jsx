@@ -56,6 +56,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [listOfCenters, setListOfCenters] = useState([]);
 
+  //to fetch list of centers
   const fetchListOfCenters = async () => {
     const response = await axios.get("/api/v1/center/getAllCenterDetails");
     if (Array.isArray(response.data.centers)) {
@@ -65,6 +66,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     }
   };
 
+  //CenterOptions format
   const CenterOptions = listOfCenters.map((center) => ({
     value: center.id,
     label: center.centerName, // Adjust this based on your data structure
@@ -74,6 +76,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     setSelectedCenter(selectedOption);
   };
 
+  //To initalise Bank Details
   const initialiseBankDtls = async (customerId) => {
     try {
       const bankDetails = {
@@ -95,6 +98,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     }
   };
 
+  //Handle ClientPersonal Save
   const handleSaveData = async () => {
     setSalesExecID(localStorage.getItem("id"));
 
@@ -126,7 +130,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
       isSeparate,
       isOwned,
       isRented,
-      SalesExecID: localStorage.getItem("id"), // Corrected assignment
+      SalesExecID: localStorage.getItem("SalesExecId"), // Corrected assignment
       // ... add other fields here
     };
 
@@ -146,6 +150,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
         setCustomerId(response.data.customerId);
         const bankDtls = await initialiseBankDtls(response.data.customerId);
         localStorage.setItem("CustomerId", response.data.customerId);
+        localStorage.setItem("flag", 1);
         setIsSaved(true);
         setSuccessMessage("Client Created Successfully. Proceed Further.");
       } else {
@@ -157,6 +162,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     }
   };
 
+  //Handle ClientPersonal Update
   const handleUpdateData = async () => {
     setSalesExecID(localStorage.getItem("id"));
 
@@ -208,6 +214,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
     }
   };
 
+  //Set Data if available
   const setFormData = async (customerId) => {
     try {
       const response = await axios.get(

@@ -24,6 +24,7 @@ const ClinetOtherExpDtls = () => {
 
   const houseHoldId = localStorage.getItem("HouseHoldId");
   const customerId = localStorage.getItem("CustomerId");
+  const flag = localStorage.getItem("flag");
 
   const initialiseGuarantorDtls = async (customerId) => {
     try {
@@ -67,6 +68,7 @@ const ClinetOtherExpDtls = () => {
         clientOtherDtls
       );
       console.log(response.data);
+      localStorage.setItem("flag", 4);
       setIsSaved(true);
       await initialiseGuarantorDtls(customerId);
       setSuccessMessage(
@@ -132,7 +134,7 @@ const ClinetOtherExpDtls = () => {
 
   useEffect(() => {
     const houseHoldId = localStorage.getItem("HouseHoldId");
-    if (houseHoldId) {
+    if (houseHoldId && flag >= 4) {
       setIsExists(true);
       setIsSaved(true);
       setFormData(houseHoldId);
