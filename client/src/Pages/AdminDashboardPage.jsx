@@ -39,6 +39,7 @@ const AdminDashboard = () => {
           <Typography variant="h5">Hi Admin</Typography>
         </Box>
       </section>
+
       <section className="ChartSection">
         <Box>
           {/* Adjust the marginTop to make sure the content is below the navbar */}
@@ -51,7 +52,7 @@ const AdminDashboard = () => {
             }}
           >
             <Grid container spacing={2} alignItems="stretch">
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 {/* clients Chart */}
                 <Box
                   sx={{
@@ -87,6 +88,7 @@ const AdminDashboard = () => {
                       >
                         <PieChart width={200} height={200}>
                           <Pie
+                            dataKey="value" // Use "dataKey" instead of "valueKey"
                             data={data}
                             cx="50%"
                             cy="50%"
@@ -96,6 +98,7 @@ const AdminDashboard = () => {
                             label
                           />
                           <Pie
+                            dataKey="value" // Use "dataKey" instead of "valueKey"
                             data={[{ value: 100 }]}
                             cx="50%"
                             cy="50%"
@@ -123,7 +126,7 @@ const AdminDashboard = () => {
                   </Card>
                 </Box>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 {/* investors chart  */}
                 <Box
                   sx={{
@@ -159,6 +162,7 @@ const AdminDashboard = () => {
                       >
                         <PieChart width={200} height={200}>
                           <Pie
+                            dataKey="value" // Use "dataKey" instead of "valueKey"
                             data={data}
                             cx="50%"
                             cy="50%"
@@ -168,6 +172,7 @@ const AdminDashboard = () => {
                             label
                           />
                           <Pie
+                            dataKey="value" // Use "dataKey" instead of "valueKey"
                             data={[{ value: 100 }]}
                             cx="50%"
                             cy="50%"
@@ -199,11 +204,14 @@ const AdminDashboard = () => {
           </Box>
         </Box>
       </section>
+
+      {/* Tables Section  */}
       <section>
         <Box sx={{ backgroundColor: "white", p: 2 }}>
           <Grid container spacing={2}>
-            {/* Box occupying 3/5th */}
-            <Grid item xs={7}>
+            {/* Sales Executives List  */}
+
+            <Grid item xs={12} md={7}>
               <Box
                 sx={{
                   backgroundColor: "#5F8D4E",
@@ -218,7 +226,9 @@ const AdminDashboard = () => {
                     Sales Executives
                   </Typography>
                 </Box>
-                <Box></Box>
+                <Box>
+                  <SalesExeTableComponent />
+                </Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -258,11 +268,9 @@ const AdminDashboard = () => {
                 </Box>
               </Box>
             </Grid>
-            {/* Box occupying 2/5th */}
-            <Grid item xs={5}>
-              <Box sx={{ backgroundColor: "#A4BE7B", height: "200px" }}>
-                {/* Your content for the 2/5th box */}
-              </Box>
+            {/* Transaction Logs  */}
+            <Grid item xs={12} md={5}>
+              <Box sx={{ backgroundColor: "#A4BE7B", height: "200px" }}></Box>
             </Grid>
           </Grid>
         </Box>

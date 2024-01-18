@@ -185,37 +185,28 @@ const CenterReportPage = () => {
     }
   };
 
-  // const clientDtlRows = [
-  //   {
-  //     ID: "1",
-  //     SalesExecID: "SE001",
-  //     dateOfLoan: "2022-01-01",
-  //     DayOfCollection: "2022-01-15",
-  //     CenterID: "C001",
-  //     CustomerID: "Cust001",
-  //     LoanAmount: 5000.0,
-  //     Interest: 5.0,
-  //     CurrentPayCount: 2,
-  //     PayCount: 12,
-  //     PrincipalAmount: 3000.0,
-  //     Status: "Active",
-  //   },
-  //   {
-  //     ID: "2",
-  //     SalesExecID: "SE002",
-  //     dateOfLoan: "2022-02-01",
-  //     DayOfCollection: "2022-02-15",
-  //     CenterID: "C002",
-  //     CustomerID: "Cust002",
-  //     LoanAmount: 8000.0,
-  //     Interest: 8.0,
-  //     CurrentPayCount: 4,
-  //     PayCount: 10,
-  //     PrincipalAmount: 6000.0,
-  //     Status: "Inactive",
-  //   },
-  //   // Add more objects as needed
-  // ];
+  //to create center
+  const handleSaveCenterDtls = async () => {
+    const centerDtls = {
+      centerCode: centerCode,
+      centerName: centerName,
+      centerIncharge: centerIncharge,
+    };
+
+    try {
+      const response = await axios.post(
+        "/api/v1/center/createCenterDetails",
+        centerDtls
+      );
+
+      if (response.status === 201) {
+        console.log("Center Created");
+        setAddCenterDialogue(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   //to create salesExec
   const handleSaveSalesExec = async () => {
@@ -600,7 +591,7 @@ const CenterReportPage = () => {
                     </Box>
 
                     <TableContainer component={Paper}>
-                      <Table>
+                      <Table placeholder={"Select"}>
                         <TableHead>
                           <TableRow
                             sx={{ backgroundColor: "black", color: "white" }}
@@ -724,7 +715,7 @@ const CenterReportPage = () => {
             Cancel
           </Button>
           <Button
-            // onClick={handleSaveUser}
+            onClick={handleSaveCenterDtls}
             // color="white"
             sx={{
               color: "white",
