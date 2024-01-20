@@ -39,6 +39,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 const SalesExecutiveDashboardPage = () => {
   const salesExecId = localStorage.getItem("SalesExecId");
 
+  const [clientDtlRows, setClientDtlRows] = useState([]);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -58,6 +60,7 @@ const SalesExecutiveDashboardPage = () => {
 
   //for center selection
   const [selectedCenter, setSelectedCenter] = useState(null);
+  const [selectedCenterId, setSelectedCenterId] = useState(null);
   const [listOfCenters, setListOfCenters] = useState([]);
   const CenterOptions = listOfCenters.map((center) => ({
     value: center.id,
@@ -66,84 +69,66 @@ const SalesExecutiveDashboardPage = () => {
     IFSC: center.IFSC,
     Incharge: center.centerIncharge,
   }));
+
   //to fetch CenterDtls
   const fetchCenterRows = async () => {
     const response = await axios.get("/api/v1/center/getAllCenterDetails");
 
-    console.log(response.data.centers);
     setListOfCenters(response.data.centers);
   };
 
   const handleCenterSelect = (selectedOption) => {
     setSelectedCenter(selectedOption);
-    console.log(selectedOption);
+    setSelectedCenterId(selectedOption.value);
+    fetchClientLoanDtls(salesExecId, selectedOption.value);
   };
 
-  const fetchClientDetails = async (salesExecId) => {
+  //fetched clientLoanDetails then pass to CLientDtls func to get client's name
+  const fetchClientLoanDtls = async (salesExecId) => {
     try {
       const response = await axios.get(
-        `/api/v1/client/getAllClientPersonalDetails?salesExecID=${salesExecId}`
+        `/api/v1/cashflow/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`
       );
-      console.log(response.data.clients);
+
+      const entries = response.data.entries;
+      console.log(entries);
+
+      const clientDetailsPromises = entries.map(async (entry) => {
+        const clientDetails = await fetchClientDetails(entry.CustomerID, entry);
+        return {
+          ...entry,
+          clientName: clientDetails.clientName,
+          clientPhone: clientDetails.clientPhone,
+          clientAddress: clientDetails.clientAddress,
+        };
+      });
+      const updatedEntries = await Promise.all(clientDetailsPromises);
+
+      setClientDtlRows(updatedEntries);
+      console.log("update:", updatedEntries);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const clientColumns = [
-    { id: "slno", label: "Slno.", minWidth: 100, align: "center" },
-    { id: "name", label: "Name", minWidth: 150, align: "center" },
-    {
-      id: "phoneNumber",
-      label: "Phone Number",
-      minWidth: 150,
-      align: "center",
-    },
-    { id: "dateOfLoan", label: "Date of Loan", minWidth: 150, align: "center" },
-    { id: "amount", label: "Amount", minWidth: 150, align: "center" },
-  ];
-  const centerDtlRows = [
-    {
-      slno: 1,
-      centerId: "C001",
-      centerName: "Center A",
-      IFSCcode: "XYZ123",
-      amount: 50000,
-    },
-    {
-      slno: 2,
-      centerId: "C002",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 3,
-      centerId: "C003",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 4,
-      centerId: "C004",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    {
-      slno: 5,
-      centerId: "C005",
-      centerName: "Center B",
-      IFSCcode: "ABC456",
-      amount: 75000,
-    },
-    // Add more centerDtlRows as needed
-  ];
+  const fetchClientDetails = async (clientId, row) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/client/getClientPersonalDetailsById/${clientId}`
+      );
+      const clientName = response.data.clientPersonal.CustomerName;
+      const clientPhone = response.data.clientPersonal.MobileNo1;
+      const clientAddress = response.data.clientPersonal.Address;
+
+      return { ...row, clientName, clientPhone, clientAddress };
+    } catch (error) {
+      console.log(error);
+      return row; // Return the original row in case of an error
+    }
+  };
 
   useEffect(() => {
     fetchCenterRows();
-    fetchClientDetails(salesExecId);
   }, []);
 
   return (
@@ -276,7 +261,7 @@ const SalesExecutiveDashboardPage = () => {
                       </TableHead>
 
                       <TableBody>
-                        {clientColumns
+                        {clientDtlRows
                           .slice(
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage
@@ -286,12 +271,15 @@ const SalesExecutiveDashboardPage = () => {
                               key={row.slno}
                               sx={alternateRowColor(index)} // Apply styles here
                             >
-                              <TableCell>{row.slno}</TableCell>
-                              <TableCell>{row.centerId}</TableCell>
-                              <TableCell>{row.centerName}</TableCell>
-                              <TableCell>{row.IFSCcode}</TableCell>
-                              <TableCell>{row.amount}</TableCell>
-                              <TableCell>{row.amount}</TableCell>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>{row.clientName}</TableCell>
+                              <TableCell>{row.clientPhone}</TableCell>
+                              <TableCell>{row.Address}</TableCell>
+                              <TableCell>{row.DayOfCollection}</TableCell>
+                              <TableCell>
+                                {row.CurrentPayCount}/{row.PayCount}
+                              </TableCell>
+
                               <TableCell>
                                 <Button variant="outlined">Update</Button>
                               </TableCell>
@@ -302,7 +290,7 @@ const SalesExecutiveDashboardPage = () => {
                     <TablePagination
                       rowsPerPageOptions={[5, 10, 25]}
                       component="div"
-                      count={clientColumns.length}
+                      count={clientDtlRows.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onPageChange={handleChangePage}

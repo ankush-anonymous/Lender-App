@@ -28,8 +28,8 @@ export const createEntry = async (req, res) => {
     const result = await cashFlowRepository.createCashFlowEntry(
       id,
       SalesExecID,
-      Date,
-      CollectionDate,
+      dateOfLoan,
+      DayOfCollection,
       CenterID,
       CustomerID,
       LoanAmount,

@@ -131,6 +131,7 @@ const CenterReportPage = () => {
     return { backgroundColor, color: textColor };
   };
 
+  //fetched clientLoanDetails then pass to CLientDtls func to get client's name
   const fetchClientLoanDtls = async (salesExecId) => {
     try {
       const response = await axios.get(
