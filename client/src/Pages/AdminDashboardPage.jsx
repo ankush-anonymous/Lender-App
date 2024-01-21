@@ -40,6 +40,7 @@ const AdminDashboard = () => {
         </Box>
       </section>
 
+      {/* Pie Chart Section  */}
       <section className="ChartSection">
         <Box>
           {/* Adjust the marginTop to make sure the content is below the navbar */}
@@ -270,7 +271,51 @@ const AdminDashboard = () => {
             </Grid>
             {/* Transaction Logs  */}
             <Grid item xs={12} md={5}>
-              <Box sx={{ backgroundColor: "#A4BE7B", height: "200px" }}></Box>
+              <Box
+                sx={{
+                  backgroundColor: "#A4BE7B",
+                  height: "200px",
+                  padding: "15px",
+                  borderRadius: "10px",
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: "white",
+                    height: "100%",
+                    padding: "5px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      backgroundColor: "grey.300",
+                      padding: "5px",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <div>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "10px",
+                        }}
+                      >
+                        <Typography variant="subheading">From:</Typography>
+
+                        <Typography variant="subheading">To:</Typography>
+                      </Box>
+                      <br />
+                      <Typography variant="subheading">Amount:</Typography>
+                      <br />
+                      <Typography variant="subheading">Date:</Typography>
+                      <br />
+                      {/* Add additional details as needed */}
+                    </div>
+                  </Box>
+                </Box>
+              </Box>
             </Grid>
           </Grid>
         </Box>

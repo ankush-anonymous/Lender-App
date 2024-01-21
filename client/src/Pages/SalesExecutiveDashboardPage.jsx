@@ -65,16 +65,23 @@ const SalesExecutiveDashboardPage = () => {
   const [dialogueClientPhone, setDialogueContentPhone] = useState("");
 
   //for center selection
-  const [selectedCenter, setSelectedCenter] = useState(null);
-  const [selectedCenterId, setSelectedCenterId] = useState(null);
+  const [selectedCenter, setSelectedCenter] = useState({
+    value: "all",
+    label: "All",
+  });
+  const [selectedCenterId, setSelectedCenterId] = useState("all");
+
   const [listOfCenters, setListOfCenters] = useState([]);
-  const CenterOptions = listOfCenters.map((center) => ({
-    value: center.id,
-    label: center.centerName, // Adjust this based on your data structure
-    centerCode: center.centerCode,
-    IFSC: center.IFSC,
-    Incharge: center.centerIncharge,
-  }));
+  const CenterOptions = [
+    { value: "all", label: "All" }, // Add this line for the "All" option
+    ...listOfCenters.map((center) => ({
+      value: center.id,
+      label: center.centerName,
+      centerCode: center.centerCode,
+      IFSC: center.IFSC,
+      Incharge: center.centerIncharge,
+    })),
+  ];
 
   //to fetch CenterDtls
   const fetchCenterRows = async () => {
@@ -90,7 +97,7 @@ const SalesExecutiveDashboardPage = () => {
   };
 
   //fetched clientLoanDetails then pass to CLientDtls func to get client's name
-  const fetchClientLoanDtls = async (salesExecId) => {
+  const fetchClientLoanDtls = async (salesExecId, selectedCenterId) => {
     try {
       const response = await axios.get(
         `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`
