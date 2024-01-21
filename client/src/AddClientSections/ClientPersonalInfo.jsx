@@ -76,23 +76,23 @@ const ClientPersonalInfo = ({ activeStep }) => {
     setSelectedCenter(selectedOption);
   };
 
-  //To initalise Bank Details
-  const initialiseBankDtls = async (customerId) => {
+  //To initalise Family Details
+  const initialiseFamilyDtls = async (customerId) => {
     try {
-      const bankDetails = {
-        clientID: customerId,
+      const familyDtls = {
+        clientId: customerId,
       };
       const response = await axios.post(
-        "/api/v1/client/bankdetails/createClientBankDetails",
-        bankDetails
+        "/api/v1/client/family/createFamilyMember",
+        familyDtls
       );
-      localStorage.setItem("BankDtlsId", response.data.id);
-      setSuccessMessage("Bank Details Initialized");
+      localStorage.setItem("familyId", response.data.id);
+      setSuccessMessage("Family Details Initialized");
       setShowSuccess(true);
     } catch (error) {
       console.log(error);
       setAlertMessage(
-        "Bank Details not initialized. Please contact the developer"
+        "Family Details not initialized. Please contact the developer"
       );
       setShowAlert(true);
     }
@@ -148,7 +148,7 @@ const ClientPersonalInfo = ({ activeStep }) => {
         );
 
         setCustomerId(response.data.customerId);
-        const bankDtls = await initialiseBankDtls(response.data.customerId);
+        const familyDtls = await initialiseFamilyDtls(response.data.customerId);
         localStorage.setItem("CustomerId", response.data.customerId);
         localStorage.setItem("flag", 1);
         setIsSaved(true);

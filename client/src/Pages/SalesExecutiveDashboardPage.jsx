@@ -58,6 +58,12 @@ const SalesExecutiveDashboardPage = () => {
     setPage(0);
   };
 
+  //for UpdateClientDialogue
+  const [openClientUpdateDialogue, setOpenClientUpdateDialogue] =
+    useState(false);
+  const [dialogueClientName, setDialogueContentName] = useState("");
+  const [dialogueClientPhone, setDialogueContentPhone] = useState("");
+
   //for center selection
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [selectedCenterId, setSelectedCenterId] = useState(null);
@@ -87,7 +93,7 @@ const SalesExecutiveDashboardPage = () => {
   const fetchClientLoanDtls = async (salesExecId) => {
     try {
       const response = await axios.get(
-        `/api/v1/cashflow/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`
+        `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`
       );
 
       const entries = response.data.entries;
@@ -336,6 +342,53 @@ const SalesExecutiveDashboardPage = () => {
           </Box>
         </section>
         <section mt={10}></section>
+
+        <Box>
+          <Dialog
+            open={openClientUpdateDialogue}
+            onClose={() => setOpenClientUpdateDialogue(false)}
+          >
+            <DialogTitle>Update Loan Details</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Update Loan details:</DialogContentText>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                  minWidth: "100px",
+                  width: "500px",
+                  marginTop: "5px",
+                }}
+              >
+                <TextField
+                  disabled
+                  label="Client Name"
+                  value={dialogueClientName}
+                  fullWidth
+                />
+                <TextField
+                  disabled
+                  label="Client Phone No"
+                  value={dialogueClientPhone}
+                  fullWidth
+                />
+                <TextField
+                  disabled
+                  label="Amount To be paid"
+                  value={dialogueClientPhone}
+                  fullWidth
+                />
+                <TextField
+                  disabled
+                  label="Amount Paid"
+                  value={dialogueClientPhone}
+                  fullWidth
+                />
+              </Box>
+            </DialogContent>
+          </Dialog>
+        </Box>
       </Box>
     </>
   );

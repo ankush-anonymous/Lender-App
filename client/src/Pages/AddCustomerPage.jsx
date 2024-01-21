@@ -15,6 +15,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 
 import ClientPersonalInfo from "../AddClientSections/ClientPersonalInfo";
+import ClientFamilyDetails from "../AddClientSections/ClientFamilyDetails";
 import ClientGuarantorDetails from "../AddClientSections/ClientGuarantorDetails";
 import ClientBankDtls from "../AddClientSections/ClientBankDtls";
 import ClinetOtherExpDtls from "../AddClientSections/ClinetOtherExpDtls";
@@ -123,6 +124,7 @@ const AddCustomerPage = () => {
       >
         <Box>
           {activeStep === 0 && <ClientPersonalInfo />}
+          {activeStep === 1 && <ClientFamilyDetails />}
           {activeStep === 2 && <ClientBankDtls />}
           {activeStep === 3 && <ClinetOtherExpDtls />}
           {activeStep === 4 && <ClientGuarantorDetails />}

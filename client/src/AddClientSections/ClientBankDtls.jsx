@@ -84,7 +84,6 @@ const ClientBankDtls = ({ activeStep }) => {
         clientBankDtls
       );
       console.log(response.data);
-      setIsSaved(true);
       setSuccessMessage(
         "Client Bank Details Updated Successfully. Proceed Further."
       );
@@ -97,7 +96,7 @@ const ClientBankDtls = ({ activeStep }) => {
   const setFormData = async (bankId) => {
     try {
       const response = await axios.get(
-        `api/v1/client/bankdetails/getClientBankDetailsById/${bankId}`
+        `/api/v1/client/bankdetails/getClientBankDetailsById/${bankId}`
       );
       const dataExists = response.data.result;
 
@@ -114,6 +113,7 @@ const ClientBankDtls = ({ activeStep }) => {
     const bankId = localStorage.getItem("BankDtlsId");
     if (bankId && flag >= 3) {
       setIsExists(true);
+      setIsSaved(true);
       setFormData(bankId);
     }
   }, []);
@@ -230,6 +230,7 @@ const ClientBankDtls = ({ activeStep }) => {
           padding: "5px",
         }}
       >
+        {console.log(isSaved)}
         {!isSaved ? (
           <Button variant="outlined" onClick={handleSaveData}>
             Save Data

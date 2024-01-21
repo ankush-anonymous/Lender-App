@@ -135,7 +135,7 @@ const CenterReportPage = () => {
   const fetchClientLoanDtls = async (salesExecId) => {
     try {
       const response = await axios.get(
-        `/api/v1/cashflow/getAllcashFlow?SalesExecID=${salesExecId}`
+        `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}`
       );
 
       const entries = response.data.entries;
