@@ -99,9 +99,16 @@ const SalesExecutiveDashboardPage = () => {
   //fetched clientLoanDetails then pass to CLientDtls func to get client's name
   const fetchClientLoanDtls = async (salesExecId, selectedCenterId) => {
     try {
-      const response = await axios.get(
-        `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`
-      );
+      let url;
+      if (selectedCenterId === "all") {
+        // If the selectedCenterId is "all", fetch all entries without specifying a CenterID
+        url = `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}`;
+      } else {
+        // If a specific center is selected, fetch entries with the specified CenterID
+        url = `/api/v1/MoneyRecord/getAllcashFlow?SalesExecID=${salesExecId}&CenterID=${selectedCenterId}`;
+      }
+
+      const response = await axios.get(url);
 
       const entries = response.data.entries;
       console.log(entries);
@@ -142,6 +149,7 @@ const SalesExecutiveDashboardPage = () => {
 
   useEffect(() => {
     fetchCenterRows();
+    fetchClientLoanDtls(salesExecId, selectedCenterId); // Add this line
   }, []);
 
   return (
