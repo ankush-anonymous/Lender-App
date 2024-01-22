@@ -145,7 +145,6 @@ const CenterReportPage = () => {
         return { ...entry, clientName: clientDetails.clientName };
       });
       const updatedEntries = await Promise.all(clientDetailsPromises);
-
       setClientDtlRows(updatedEntries);
     } catch (error) {
       console.log(error);
@@ -169,7 +168,6 @@ const CenterReportPage = () => {
   const fetchCenterRows = async () => {
     const response = await axios.get("/api/v1/center/getAllCenterDetails");
 
-    console.log(response.data.centers);
     setCenterDtlRows(response.data.centers);
     setListOfCenters(response.data.centers);
   };

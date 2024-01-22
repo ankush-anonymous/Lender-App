@@ -85,9 +85,13 @@ const SalesExecutiveDashboardPage = () => {
 
   //to fetch CenterDtls
   const fetchCenterRows = async () => {
-    const response = await axios.get("/api/v1/center/getAllCenterDetails");
+    try {
+      const response = await axios.get("/api/v1/center/getAllCenterDetails");
 
-    setListOfCenters(response.data.centers);
+      setListOfCenters(response.data.centers);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCenterSelect = (selectedOption) => {
@@ -327,7 +331,7 @@ const SalesExecutiveDashboardPage = () => {
                   >
                     <Button
                       variant="contained"
-                      // onClick={() => setAddCenterDialogue(true)}
+                      onClick={() => setOpenClientUpdateDialogue(true)}
                       sx={{
                         backgroundColor: "#285430",
                         "&:hover": {
