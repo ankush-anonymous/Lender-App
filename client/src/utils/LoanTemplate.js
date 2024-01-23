@@ -1,0 +1,117 @@
+export const LoanDtls = [
+  {
+    EWI: 670,
+    Principle: 464.93,
+    Interest: 205.07,
+    Balance: 9535.07,
+  },
+  {
+    EWI: 670,
+    Principle: 474.46,
+    Interest: 195.53,
+    Balance: 9060.61,
+  },
+  {
+    EWI: 670,
+    Principle: 484.19,
+    Interest: 185.8,
+    Balance: 8576.41,
+  },
+
+  {
+    EWI: 670,
+    Principle: 494.12,
+    Interest: 175.87,
+    Balance: 8082.29,
+  },
+  {
+    EWI: 670,
+    Principle: 504.26,
+    Interest: 165.74,
+    Balance: 7578.04,
+  },
+  {
+    EWI: 670,
+    Principle: 514.6,
+    Interest: 155.4,
+    Balance: 7063.44,
+  },
+  {
+    EWI: 670,
+    Principle: 525.15,
+    Interest: 144.85,
+    Balance: 6538.29,
+  },
+  {
+    EWI: 670,
+    Principle: 535.92,
+    Interest: 134.08,
+    Balance: 6002.37,
+  },
+  {
+    EWI: 670,
+    Principle: 546.91,
+    Interest: 123.09,
+    Balance: 5455.47,
+  },
+  {
+    EWI: 670,
+    Principle: 558.12,
+    Interest: 111.87,
+    Balance: 4897.34,
+  },
+  {
+    EWI: 670,
+    Principle: 569.57,
+    Interest: 100.43,
+    Balance: 4327.78,
+  },
+  {
+    EWI: 670,
+    Principle: 569.57,
+    Interest: 100.43,
+    Balance: 4327.78,
+  },
+  {
+    EWI: 670,
+    Principle: 581.25,
+    Interest: 88.75,
+    Balance: 3746.53,
+  },
+  {
+    EWI: 670,
+    Principle: 593.17,
+    Interest: 76.83,
+    Balance: 3153.36,
+  },
+  {
+    EWI: 670,
+    Principle: 605.33,
+    Interest: 64.44,
+    Balance: 2548.03,
+  },
+  {
+    EWI: 670,
+    Principle: 617.74,
+    Interest: 52.25,
+    Balance: 1930.29,
+  },
+  {
+    EWI: 670,
+    Principle: 630.41,
+    Interest: 39.58,
+    Balance: 1299.87,
+  },
+  {
+    EWI: 670,
+    Principle: 643.43,
+    Interest: 26.66,
+    Balance: 656.53,
+  },
+  {
+    EWI: 670,
+    Principle: 656.53,
+    Interest: 13.46,
+    Balance: 0,
+  },
+];

@@ -33,13 +33,26 @@ import {
   ListItemText,
   Avatar,
   ListItemAvatar,
+  Slide,
+  Toolbar,
+  IconButton,
+  AppBar,
 } from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
+import { LoanDtls } from "../utils/LoanTemplate";
+
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const SalesExecutiveDashboardPage = () => {
   const salesExecId = localStorage.getItem("SalesExecId");
 
   const [clientDtlRows, setClientDtlRows] = useState([]);
+
+  //for full screen dialogue to update LoanDtls
+  const [updateLoanDialogue, setUpdateLoanDialogue] = useState(true);
+  const [amountPaid, setAmountPaid] = useState();
+  const [dateOfCollection, setDateOfCollection] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -150,6 +163,15 @@ const SalesExecutiveDashboardPage = () => {
       return row; // Return the original row in case of an error
     }
   };
+
+  const handleUpdateLoanDialogue = async () => {};
+
+  const handleUpdateEWI = async () => {};
+
+  // transition for know client details modal
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
   useEffect(() => {
     fetchCenterRows();
@@ -362,6 +384,7 @@ const SalesExecutiveDashboardPage = () => {
         </section>
         <section mt={10}></section>
 
+        {/* ClientUpdateDialogue */}
         <Box>
           <Dialog
             open={openClientUpdateDialogue}
@@ -409,6 +432,116 @@ const SalesExecutiveDashboardPage = () => {
           </Dialog>
         </Box>
       </Box>
+
+      {/* Full Screen Modal to update Loan details */}
+      <Dialog
+        fullScreen
+        open={updateLoanDialogue}
+        onClose={handleUpdateLoanDialogue}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "relative", backgroundColor: "#5F8D4E" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleUpdateLoanDialogue}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Client's Name Loan Details
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <Box p={8}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                  }}
+                >
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Slno
+                  </TableCell>
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    EWI Date
+                  </TableCell>
+
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    EWI
+                  </TableCell>
+
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Principal
+                  </TableCell>
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Interest
+                  </TableCell>
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Balance
+                  </TableCell>
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Paid
+                  </TableCell>
+                  <TableCell style={{ color: "white", textAlign: "center" }}>
+                    Update
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {LoanDtls.map((row, index) => (
+                  <TableRow
+                    key={row.CustomerID}
+                    sx={alternateRowColor(index)} // Apply styles here
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        label="Date Of Collection"
+                        value={dateOfCollection}
+                        onChange={(e) => setDateOfCollection(e.target.value)}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        margin="normal"
+                        sx={{ width: "200px", marginRight: "10px" }}
+                      />
+                    </TableCell>
+
+                    <TableCell>{row.EWI}</TableCell>
+                    <TableCell>{row.Principle}</TableCell>
+                    <TableCell>{row.Interest}</TableCell>
+                    <TableCell>{row.Balance}</TableCell>
+                    <TableCell>
+                      <TextField
+                        type="number"
+                        label="Amount Paid"
+                        value={amountPaid}
+                        onChange={(e) => setAmountPaid(e.target.value)}
+                        margin="normal"
+                        sx={{ width: "200px", marginRight: "10px" }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outlined" onClick={handleUpdateEWI}>
+                        Update
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Dialog>
     </>
   );
 };
